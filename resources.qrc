@@ -1,0 +1,16 @@
+<RCC>
+    <qresource prefix="/icons">
+        <file alias="burgermenu">src/icons/burgermenu.svg</file>
+        <file alias="geo">src/icons/geo.svg</file>
+        <file alias="likes">src/icons/likes.svg</file>
+        <file alias="profile">src/icons/profile.svg</file>
+        <file alias="search">src/icons/search.svg</file>
+        <file alias="shopbag">src/icons/shopbag.svg</file>
+    </qresource>
+    <qresource prefix="/avatar">
+        <file alias="ava">src/avatar/avatar.jpg</file>
+    </qresource>
+    <qresource prefix="/biz">
+        <file alias="logo">src/logo/logo.png</file>
+    </qresource>
+</RCC>
