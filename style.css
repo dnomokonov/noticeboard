@@ -1,0 +1,10 @@
+QMainWindow {
+    background-color: #FFFFFF;
+}
+
+#blockFormAuth {
+    border-radius: 10px;
+    background-color: #F2F2F2;
+    min-width: 300px;
+    min-height: 300px;
+}

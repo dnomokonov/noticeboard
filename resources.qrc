@@ -13,4 +13,7 @@
     <qresource prefix="/biz">
         <file alias="logo">src/logo/logo.png</file>
     </qresource>
+    <qresource prefix="/styles">
+        <file>style.css</file>
+    </qresource>
 </RCC>
