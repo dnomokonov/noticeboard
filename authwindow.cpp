@@ -5,14 +5,23 @@
 #include <QLabel>
 #include <QPixmap>
 #include <QHBoxLayout>
-#include <QSpacerItem>
 #include <QPushButton>
+#include <QStackedWidget>
+#include <QLineEdit>
+#include <QVBoxLayout>
+#include <QFile>
 
 AuthWindow::AuthWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::AuthWindow)
 {
     ui->setupUi(this);
+
+    QFile styleFile(":/styles/style.css");
+    if (styleFile.open(QFile::ReadOnly)) {
+        QString styleSheet = QLatin1String(styleFile.readAll());
+        this->setStyleSheet(styleSheet);
+    }
 
     QWidget *centralWidget = new QWidget(this);
     this->setCentralWidget(centralWidget);
@@ -21,9 +30,11 @@ AuthWindow::AuthWindow(QWidget *parent)
     gridLayout->setContentsMargins(0, 0, 0, 0);
     gridLayout->setSpacing(0);
 
+    // Header
+
     QWidget *header = new QWidget(this);
     QHBoxLayout *headerLayout = new QHBoxLayout(header);
-    header->setFixedHeight(100);
+    header->setFixedHeight(80);
 
     QLabel *logoLabel = new QLabel(this);
     QPixmap logoPixmap(":/biz/logo");
@@ -39,11 +50,20 @@ AuthWindow::AuthWindow(QWidget *parent)
     headerLayout->addWidget(logoLabel, 0, Qt::AlignLeft);
     gridLayout->addWidget(header, 0, 0, 1, 2);
 
-    QLabel *body = new QLabel("Body content goes here", this);
+    // Body
+
+    QWidget *body = new QWidget(this);
+    QHBoxLayout *bodyLayout = new QHBoxLayout(body);
+
+    QStackedWidget *stackedWidget = new QStackedWidget(this);
+    stackedWidget->setObjectName("blockFormAuth");
+    stackedWidget->setFixedSize(540, 690);
+
+    QVBoxLayout *centerLayout = new QVBoxLayout();
+    centerLayout->addWidget(stackedWidget, Qt::AlignCenter);
+    bodyLayout->addLayout(centerLayout);
+
     gridLayout->addWidget(body, 1, 0);
-
-
-
     gridLayout->setRowStretch(1, 1);
 }
 
