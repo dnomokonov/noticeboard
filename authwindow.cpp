@@ -31,7 +31,6 @@ AuthWindow::AuthWindow(QWidget *parent)
     gridLayout->setSpacing(0);
 
     // Header
-
     QWidget *header = new QWidget(this);
     QHBoxLayout *headerLayout = new QHBoxLayout(header);
     header->setFixedHeight(80);
@@ -45,23 +44,37 @@ AuthWindow::AuthWindow(QWidget *parent)
     header->setContentsMargins(50, 0, 0, 0);
     headerLayout->setContentsMargins(0, 0, 0, 0);
     headerLayout->setSpacing(0);
-
     header->setStyleSheet("background-color: #F5F5F5;");
     headerLayout->addWidget(logoLabel, 0, Qt::AlignLeft);
     gridLayout->addWidget(header, 0, 0, 1, 2);
 
     // Body
-
     QWidget *body = new QWidget(this);
     QHBoxLayout *bodyLayout = new QHBoxLayout(body);
 
     QStackedWidget *stackedWidget = new QStackedWidget(this);
+    QHBoxLayout *stackedLayout = new QHBoxLayout(stackedWidget);
     stackedWidget->setObjectName("blockFormAuth");
     stackedWidget->setFixedSize(540, 690);
 
     QVBoxLayout *centerLayout = new QVBoxLayout();
     centerLayout->addWidget(stackedWidget, Qt::AlignCenter);
     bodyLayout->addLayout(centerLayout);
+
+    QWidget *loginPage = new QWidget(stackedWidget);
+    QHBoxLayout *loginLayout = new QHBoxLayout(loginPage);
+    loginLayout->addWidget(loginPage, Qt::AlignCenter);
+    stackedLayout->addLayout(loginLayout);
+
+    QLineEdit *usernameField = new QLineEdit(loginPage);
+    QLineEdit *passwordField = new QLineEdit(loginPage);
+    usernameField->setPlaceholderText("Username");
+    passwordField->setPlaceholderText("Password");
+    loginLayout->addWidget(usernameField);
+    loginLayout->addWidget(passwordField);
+
+    QPushButton *loginBtn = new QPushButton("Login", loginPage);
+    loginLayout->addWidget(loginBtn);
 
     gridLayout->addWidget(body, 1, 0);
     gridLayout->setRowStretch(1, 1);
