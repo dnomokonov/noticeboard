@@ -3,14 +3,24 @@ QMainWindow {
 }
 
 #blockFormAuth {
+    min-width: 350px;
+    min-height: 450px;
     border-radius: 10px;
+    margin: 20px;
     background-color: #F2F2F2;
-    min-width: 300px;
-    min-height: 300px;
 }
 
-#loginPage {
-    width: 80px;
-    height: 300px;
-    background-color: transparent;
+#defaultField {
+    height: 30px;
+    margin: 0 50px 10px 50px;
+}
+
+#headerName {
+    color: black;
+    font-size: 25px;
+    padding-bottom: 20px;
+}
+
+#authBtn {
+    height: 25px;
 }
