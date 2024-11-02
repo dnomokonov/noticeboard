@@ -55,11 +55,11 @@ MainWindow::MainWindow(QWidget *parent)
     QPushButton *categoryButton = new QPushButton(controlPanel);
     categoryButton->setObjectName("customIconBtn");
     categoryButton->setFixedSize(30, 30);
-    categoryButton->setIcon(iconMenu);
+    categoryButton->setIcon(categoryButtonIcon);
 
     QLineEdit *searchInput = new QLineEdit(controlPanel);
     searchInput->setObjectName("searchInput");
-    searchInput->setPlaceholderText("Search...");
+    searchInput->setPlaceholderText("Поиск...");
 
     QPushButton *searchButton = new QPushButton("Найти", controlPanel);
     searchButton->setObjectName("customBtn");
@@ -72,6 +72,7 @@ MainWindow::MainWindow(QWidget *parent)
     geoBtnLabel->setScaledContents(true);
 
     controlPanelLayout->addWidget(categoryButton);
+    controlPanelLayout->addSpacing(5);
     controlPanelLayout->addWidget(searchInput);
     controlPanelLayout->addWidget(searchButton);
     controlPanelLayout->addWidget(geoBtnLabel);
