@@ -2,6 +2,10 @@ QMainWindow {
     background-color: #FFFFFF;
 }
 
+#header{
+    background-color: #F5F5F5;
+}
+
 #blockFormAuth {
     min-width: 350px;
     min-height: 450px;
@@ -23,4 +27,27 @@ QMainWindow {
 
 #authBtn {
     height: 25px;
+}
+
+#searchInput {
+    width: 300px;
+    min-width: 200px;
+    height: 26px;
+    border: 2px solid #6771E0;
+    border-radius: 15px;
+    padding-left: 10px;
+    color: black;
+    background-color: #FFFFFF;
+}
+
+#customBtn {
+    background-color: #6771E0;
+    color: white;
+    border-radius: 15px;
+}
+
+#customIconBtn {
+    background-color: #6771E0;
+    color: white;
+    border-radius: 8px;
 }
