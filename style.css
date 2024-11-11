@@ -46,8 +46,98 @@ QMainWindow {
     border-radius: 15px;
 }
 
+#customBtn:hover {
+    background-color: #636dd6;
+}
+
+#customBtn:pressed {
+    background-color: #5c65c4;
+}
+
 #customIconBtn {
     background-color: #6771E0;
     color: white;
     border-radius: 8px;
+}
+
+#customIconBtn:hover {
+    background-color: #636dd6;
+}
+
+#customIconBtn:pressed {
+    background-color: #5c65c4;
+}
+
+#onlyIconButton {
+    border: none;
+    background: none;
+}
+
+#testing {
+    background-color: black;
+}
+
+
+#blockCreateAd {
+    min-height: 480px;
+    min-width: 1020px;
+    border-radius: 10px;
+    color: black;
+    background-color: #EAEAEA;
+}
+
+#customFieldCreateAd {
+    padding: 8px;
+    border-radius: 15px;
+    color: black;
+    background-color: #D9D9D9;
+}
+
+#titleLabelCreateBlock {
+    padding-left: 2px;
+    color: black;
+}
+
+#createAdButton {
+    margin-top: 10px;
+    background-color: #6771E0;
+    color: white;
+    border-radius: 8px;
+}
+
+#createAdButton:hover {
+    background-color: #636dd6;
+}
+
+#createAdButton:pressed {
+    background-color: #5c65c4;
+}
+
+#categoryCustom {
+    padding: 8px;
+    color: black;
+    background-color: #D9D9D9;
+}
+
+#categoryCustom QAbstractItemView {
+    outline: none;
+    padding: 8px;
+    color: black;
+    border-radius: 2px;
+    background-color: #d1d1d1;
+}
+
+#categoryCustom QAbstractItemView::item {
+    padding: 5px;
+}
+
+
+#categoryCustom QAbstractItemView::item:selected {
+    background-color: #6771E0;
+    color: #ffffff;
+}
+
+#uploadImageBlock {
+    border-radius: 15px;
+    background-color: #D9D9D9;
 }

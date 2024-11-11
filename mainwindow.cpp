@@ -1,12 +1,13 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
+#include "createadvertising.h"
+#include "favourites.h"
+#include "shoppingcart.h"
+#include "profile.h"
+#include "adsfound.h"
+#include "viewingad.h" // временное решение
 
-#include <QFile>
-#include <QGridLayout>
-#include <QLabel>
-#include <QHBoxLayout>
-#include <QLineEdit>
-#include <QPushButton>
+#include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -66,16 +67,20 @@ MainWindow::MainWindow(QWidget *parent)
     searchButton->setFixedSize(80, 30);
     searchButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 
-    QLabel *geoBtnLabel = new QLabel(controlPanel);
-    geoBtnLabel->setPixmap(QPixmap(":/icons/geo"));
-    geoBtnLabel->setFixedSize(18, 22);
-    geoBtnLabel->setScaledContents(true);
+    QPushButton *geoButton = new QPushButton(controlPanel);
+    geoButton->setObjectName("onlyIconButton");
+
+    QPixmap iconGeo(":/icons/geo");
+    QIcon geoButtonIcon(iconGeo);
+
+    geoButton->setIcon(geoButtonIcon);
+    geoButton->setIconSize(QSize(18, 22));
 
     controlPanelLayout->addWidget(categoryButton);
     controlPanelLayout->addSpacing(5);
     controlPanelLayout->addWidget(searchInput);
     controlPanelLayout->addWidget(searchButton);
-    controlPanelLayout->addWidget(geoBtnLabel);
+    controlPanelLayout->addWidget(geoButton);
 
     // btn add notice
     QWidget *btnAdd = new QWidget(header);
@@ -92,26 +97,38 @@ MainWindow::MainWindow(QWidget *parent)
     QHBoxLayout *userPanelLayout = new QHBoxLayout(userPanel);
     userPanel->setContentsMargins(0, 0, 50, 0);
 
-    QLabel *favBtnLabel = new QLabel(userPanel);
-    QLabel *shopbagBtnLabel = new QLabel(userPanel);
-    QLabel *profileBtnnLabel = new QLabel(userPanel);
+    QPushButton *favBtn = new QPushButton(userPanel);
+    QPushButton *shopbagBtn = new QPushButton(userPanel);
+    QPushButton *profileBtn = new QPushButton(userPanel);
 
-    favBtnLabel->setPixmap(QPixmap(":/icons/likes"));
-    shopbagBtnLabel->setPixmap(QPixmap(":/icons/shopbag"));
-    profileBtnnLabel->setPixmap(QPixmap(":/icons/profile"));
+    favBtn->setObjectName("onlyIconButton");
+    shopbagBtn->setObjectName("onlyIconButton");
+    profileBtn->setObjectName("onlyIconButton");
 
-    favBtnLabel->setFixedSize(24, 22);
-    shopbagBtnLabel->setFixedSize(22, 22);
-    profileBtnnLabel->setFixedSize(22, 22);
-    favBtnLabel->setScaledContents(true);
-    shopbagBtnLabel->setScaledContents(true);
-    profileBtnnLabel->setScaledContents(true);
+    QPixmap iconFav(":/icons/likes");
+    QPixmap iconShopbag(":/icons/shopbag");
+    QPixmap iconProfile(":/icons/profile");
 
-    userPanelLayout->addWidget(favBtnLabel);
-    userPanelLayout->addSpacing(16);
-    userPanelLayout->addWidget(shopbagBtnLabel);
-    userPanelLayout->addSpacing(16);
-    userPanelLayout->addWidget(profileBtnnLabel);
+    QIcon favButtonIcon(iconFav);
+    QIcon shopbagButtonIcon(iconShopbag);
+    QIcon profileButtonIcon(iconProfile);
+
+    favBtn->setFixedSize(30, 30);
+    shopbagBtn->setFixedSize(30, 30);
+    profileBtn->setFixedSize(30, 30);
+
+    favBtn->setIcon(favButtonIcon);
+    shopbagBtn->setIcon(shopbagButtonIcon);
+    profileBtn->setIcon(profileButtonIcon);
+    favBtn->setIconSize(QSize(24, 22));
+    shopbagBtn->setIconSize(QSize(22, 22));
+    profileBtn->setIconSize(QSize(22, 22));
+
+    userPanelLayout->addWidget(favBtn);
+    userPanelLayout->addSpacing(4);
+    userPanelLayout->addWidget(shopbagBtn);
+    userPanelLayout->addSpacing(4);
+    userPanelLayout->addWidget(profileBtn);
 
     headerLayout->addSpacing(50);
     headerLayout->addWidget(controlPanel, 1, Qt::AlignCenter);
@@ -126,15 +143,47 @@ MainWindow::MainWindow(QWidget *parent)
     QVBoxLayout *bodyLayout = new QVBoxLayout(body);
     bodyLayout->setAlignment(Qt::AlignCenter);
 
-    QVBoxLayout *centerLayout = new QVBoxLayout();
-    centerLayout->setAlignment(Qt::AlignCenter);
-    bodyLayout->addLayout(centerLayout);
+    QStackedWidget *stackedWidget = new QStackedWidget(body);
 
+    createadvertising *createAdComponent = new createadvertising();
+    favourites *favouritesComponent = new favourites();
+    shoppingcart *shoppingcartComponent = new shoppingcart();
+    profile *profileComponent = new profile();
+
+    stackedWidget->addWidget(createAdComponent);
+    stackedWidget->addWidget(favouritesComponent);
+    stackedWidget->addWidget(shoppingcartComponent);
+    stackedWidget->addWidget(profileComponent);
+
+    bodyLayout->addWidget(stackedWidget);
+    body->setLayout(bodyLayout);
 
     // <--- Grid Layout Add's --->
     gridLayout->addWidget(header, 0, 0, 1, 2);
     gridLayout->addWidget(body, 1, 0);
     gridLayout->setRowStretch(1, 1);
+
+
+    // <--- Connects --->
+    connect(btnAddNotice, &QPushButton::clicked, this, [=]() {
+        qDebug() << "Hello, btnAddNotice!";
+        stackedWidget->setCurrentWidget(createAdComponent);
+    });
+
+    connect(favBtn, &QPushButton::clicked, this, [=]() {
+        qDebug() << "Hello, favBtn!";
+        stackedWidget->setCurrentWidget(favouritesComponent);
+    });
+
+    connect(shopbagBtn, &QPushButton::clicked, this, [=]() {
+        qDebug() << "Hello, shopbagBtn!";
+        stackedWidget->setCurrentWidget(shoppingcartComponent);
+    });
+
+    connect(profileBtn, &QPushButton::clicked, this, [=]() {
+        qDebug() << "Hello, profileBtn!";
+        stackedWidget->setCurrentWidget(profileComponent);
+    });
 }
 
 MainWindow::~MainWindow()
