@@ -98,8 +98,13 @@ QMainWindow {
     color: black;
 }
 
+#uploadButton {
+    border-radius: 10px;
+    color: #404040;
+    background-color: #D6D6D6;
+}
+
 #createAdButton {
-    margin-top: 10px;
     background-color: #6771E0;
     color: white;
     border-radius: 8px;
@@ -111,6 +116,34 @@ QMainWindow {
 
 #createAdButton:pressed {
     background-color: #5c65c4;
+}
+
+#cancelButton {
+    border-radius: 10px;
+    color: white;
+    background-color: #DC2020;
+}
+
+#cancelButton:hover {
+    background-color: #d51e1e;
+}
+
+#cancelButton:pressed {
+    background-color: #ca1e1e;
+}
+
+#clearButton {
+    border-radius: 10px;
+    color: #404040;
+    background-color: #D6D6D6;
+}
+
+#clearButton:hover {
+    background-color: #cacaca;
+}
+
+#clearButton:pressed {
+    background-color: #bbbbbb;
 }
 
 #categoryCustom {
