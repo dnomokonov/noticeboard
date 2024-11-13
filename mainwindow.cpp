@@ -1,10 +1,12 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
+
 #include "createadvertising.h"
 #include "favourites.h"
 #include "shoppingcart.h"
 #include "profile.h"
 #include "adsfound.h"
+#include "listadverts.h"
 #include "viewingad.h" // временное решение
 
 #include <QDebug>
@@ -28,23 +30,24 @@ MainWindow::MainWindow(QWidget *parent)
     gridLayout->setContentsMargins(0, 0, 0, 0);
     gridLayout->setSpacing(0);
 
-    // <--- Header --->
-
     QWidget *header = new QWidget(this);
     QHBoxLayout *headerLayout = new QHBoxLayout(header);
     header->setFixedHeight(80);
     header->setObjectName("header");
 
-    QLabel *logoLabel = new QLabel(this);
+    QPushButton *logo = new QPushButton(this);
+    logo->setObjectName("onlyIconButton");
+    logo->setFixedSize(200, 30);
+
     QPixmap logoPixmap(":/biz/logo");
-    logoLabel->setPixmap(logoPixmap);
-    logoLabel->setFixedSize(200, 30);
-    logoLabel->setScaledContents(true);
+    QIcon logoPixmapIcon(logoPixmap);
+    logo->setIcon(logoPixmapIcon);
+    logo->setIconSize(QSize(200, 30));
 
     header->setContentsMargins(50, 0, 0, 0);
     headerLayout->setContentsMargins(0, 0, 0, 0);
     headerLayout->setSpacing(0);
-    headerLayout->addWidget(logoLabel, 0, Qt::AlignLeft);
+    headerLayout->addWidget(logo, 0, Qt::AlignLeft);
 
     QWidget *controlPanel = new QWidget(header);
     QHBoxLayout *controlPanelLayout = new QHBoxLayout(controlPanel);
@@ -143,17 +146,20 @@ MainWindow::MainWindow(QWidget *parent)
     QVBoxLayout *bodyLayout = new QVBoxLayout(body);
     bodyLayout->setAlignment(Qt::AlignCenter);
 
-    QStackedWidget *stackedWidget = new QStackedWidget(body);
+    stackedWidget = new QStackedWidget(body);
 
+    listAdverts *allAdvertsList = new listAdverts();
     createadvertising *createAdComponent = new createadvertising();
     favourites *favouritesComponent = new favourites();
     shoppingcart *shoppingcartComponent = new shoppingcart();
     profile *profileComponent = new profile();
 
+    stackedWidget->addWidget(profileComponent);
+    stackedWidget->addWidget(allAdvertsList);
     stackedWidget->addWidget(createAdComponent);
     stackedWidget->addWidget(favouritesComponent);
     stackedWidget->addWidget(shoppingcartComponent);
-    stackedWidget->addWidget(profileComponent);
+
 
     bodyLayout->addWidget(stackedWidget);
     body->setLayout(bodyLayout);
@@ -165,6 +171,11 @@ MainWindow::MainWindow(QWidget *parent)
 
 
     // <--- Connects --->
+    connect(logo, &QPushButton::clicked, this, [=]() {
+        qDebug() << "Hello, allAdvertsList!";
+        stackedWidget->setCurrentWidget(allAdvertsList);
+    });
+
     connect(btnAddNotice, &QPushButton::clicked, this, [=]() {
         qDebug() << "Hello, btnAddNotice!";
         stackedWidget->setCurrentWidget(createAdComponent);

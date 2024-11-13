@@ -23,6 +23,7 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+    QStackedWidget *stackedWidget;
 
 private:
     Ui::MainWindow *ui;

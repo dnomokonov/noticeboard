@@ -5,6 +5,7 @@
 #include <QFile>
 #include <QVBoxLayout>
 #include <QLabel>
+#include <QPushButton>
 
 class profile : public QWidget
 {

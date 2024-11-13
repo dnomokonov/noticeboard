@@ -7,9 +7,19 @@ profile::profile(QWidget *parent) : QWidget(parent) {
         this->setStyleSheet(styleSheet);
     }
 
-    QVBoxLayout *layout = new QVBoxLayout(this);
-    QLabel *label = new QLabel("Profile", this);
+    QGridLayout *gridLayout = new QGridLayout(this);
 
-    layout->addWidget(label);
-    setLayout(layout);
+    QWidget *personBlock = new QWidget(this);
+    QWidget *personeAdversBlock = new QWidget(this);
+
+    personBlock->setStyleSheet("background-color: #f5f5f5;");
+    personeAdversBlock->setStyleSheet("background-color: #e0e0e0;");
+
+    gridLayout->addWidget(personBlock, 0, 0);
+    gridLayout->addWidget(personeAdversBlock, 1, 0);
+
+    gridLayout->setRowStretch(0, 1);
+    gridLayout->setRowStretch(1, 2);
+    gridLayout->setColumnStretch(0, 1);
+
 }
