@@ -66,7 +66,7 @@ AuthWindow::AuthWindow(QWidget *parent)
     QVBoxLayout *loginLayout = new QVBoxLayout(loginPage);
     loginLayout->setAlignment(Qt::AlignCenter);
 
-    QLabel *headerLoginName = new QLabel("Login");
+    QLabel *headerLoginName = new QLabel("Вход");
     headerLoginName->setObjectName("headerName");
 
     QLineEdit *loginUsernameField = new QLineEdit(loginPage);
@@ -83,11 +83,11 @@ AuthWindow::AuthWindow(QWidget *parent)
     headerFormLayout->addWidget(headerLoginName);
     headerFormLayout->addStretch();
 
-    QPushButton *loginBtn = new QPushButton("Login", loginPage);
+    QPushButton *loginBtn = new QPushButton("Войти", loginPage);
     loginBtn->setObjectName("authBtn");
     loginBtn->setFixedSize(250, 30);
 
-    QPushButton *switchToRegisterBtn = new QPushButton("Sign Up", loginPage);
+    QPushButton *switchToRegisterBtn = new QPushButton("Регистрация", loginPage);
     switchToRegisterBtn->setObjectName("authBtn");
     switchToRegisterBtn->setFixedSize(250, 30);
 
@@ -114,28 +114,25 @@ AuthWindow::AuthWindow(QWidget *parent)
     QVBoxLayout *registerLayout = new QVBoxLayout(registerPage);
     registerLayout->setAlignment(Qt::AlignCenter);
 
-    QLabel *headerRegisterName = new QLabel("Register");
+    QLabel *headerRegisterName = new QLabel("Регистрация");
     headerRegisterName->setObjectName("headerName");
 
     QLineEdit *registerNameField = new QLineEdit(registerPage);
     QLineEdit *registerSurnameField = new QLineEdit(registerPage);
-    QLineEdit *registerMiddleNameField = new QLineEdit(registerPage);
     QLineEdit *registerUsernameField = new QLineEdit(registerPage);
     QLineEdit *registerPasswordField = new QLineEdit(registerPage);
     QLineEdit *confirmPasswordField = new QLineEdit(registerPage);
 
-    registerNameField->setPlaceholderText("Name");
-    registerSurnameField->setPlaceholderText("Surname");
-    registerMiddleNameField->setPlaceholderText("MiddleName");
-    registerUsernameField->setPlaceholderText("Username");
-    registerPasswordField->setPlaceholderText("Password");
-    confirmPasswordField->setPlaceholderText("Confirm Password");
+    registerNameField->setPlaceholderText("Имя");
+    registerSurnameField->setPlaceholderText("Фамилия");
+    registerUsernameField->setPlaceholderText("Имя пользователя");
+    registerPasswordField->setPlaceholderText("Пароль");
+    confirmPasswordField->setPlaceholderText("Повторите пароль");
     registerPasswordField->setEchoMode(QLineEdit::Password);
     confirmPasswordField->setEchoMode(QLineEdit::Password);
 
     registerNameField->setObjectName("defaultField");
     registerSurnameField->setObjectName("defaultField");
-    registerMiddleNameField->setObjectName("defaultField");
     registerUsernameField->setObjectName("defaultField");
     registerPasswordField->setObjectName("defaultField");
     confirmPasswordField->setObjectName("defaultField");
@@ -145,10 +142,10 @@ AuthWindow::AuthWindow(QWidget *parent)
     headerFormRegLayout->addWidget(headerRegisterName);
     headerFormRegLayout->addStretch();
 
-    QPushButton *registerBtn = new QPushButton("Register", registerPage);
+    QPushButton *registerBtn = new QPushButton("Зарегистрироваться", registerPage);
     registerBtn->setFixedSize(250, 30);
 
-    QPushButton *switchToLoginBtn = new QPushButton("Back to Login", registerPage);
+    QPushButton *switchToLoginBtn = new QPushButton("Вход", registerPage);
     switchToLoginBtn->setFixedSize(250, 30);
 
     QHBoxLayout *regbtnLayout = new QHBoxLayout();
@@ -165,7 +162,6 @@ AuthWindow::AuthWindow(QWidget *parent)
     registerLayout->addLayout(headerFormRegLayout);
     registerLayout->addWidget(registerNameField);
     registerLayout->addWidget(registerSurnameField);
-    registerLayout->addWidget(registerMiddleNameField);
     registerLayout->addWidget(registerUsernameField);
     registerLayout->addWidget(registerPasswordField);
     registerLayout->addWidget(confirmPasswordField);
