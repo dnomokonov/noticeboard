@@ -23,6 +23,34 @@ QLabel {
     margin: 0 50px 10px 50px;
 }
 
+#defaultButton {
+    border-radius: 10px;
+    color: #404040;
+    background-color: #D6D6D6;
+}
+
+#defaultButton:hover {
+    background-color: #cacaca;
+}
+
+#defaultButton:pressed {
+    background-color: #bbbbbb;
+}
+
+#defaultColorButton {
+    border-radius: 10px;
+    color: #FFFFFF;
+    background-color: #6771E0;
+}
+
+#defaultColorButton:hover {
+    background-color: #636dd6;
+}
+
+#defaultColorButton:pressed {
+    background-color: #5c65c4;
+}
+
 #headerName {
     color: black;
     font-size: 25px;
@@ -191,6 +219,7 @@ QLabel {
 /* Profile page */
 
 #profileAvatar {
-    border-radius: 50px;
+    padding: 4px;
+    border-radius: 86px;
     border: 4px solid #6771E0;
 }

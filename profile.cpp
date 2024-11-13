@@ -1,5 +1,21 @@
 #include "profile.h"
 
+QPixmap createRoundedPixmap(const QPixmap &src, int radius) {
+    QPixmap roundedPixmap(src.size());
+    roundedPixmap.fill(Qt::transparent);
+
+    QPainter painter(&roundedPixmap);
+    painter.setRenderHint(QPainter::Antialiasing);
+    painter.setRenderHint(QPainter::SmoothPixmapTransform);
+
+    QPainterPath path;
+    path.addEllipse(0, 0, src.width(), src.height());
+    painter.setClipPath(path);
+
+    painter.drawPixmap(0, 0, src);
+    return roundedPixmap;
+}
+
 profile::profile(QWidget *parent) : QWidget(parent) {
     QFile styleFile(":/styles/style.css");
     if (styleFile.open(QFile::ReadOnly)) {
@@ -12,57 +28,115 @@ profile::profile(QWidget *parent) : QWidget(parent) {
     QWidget *personBlock = new QWidget(this);
     QWidget *personeAdversBlock = new QWidget(this);
 
-    personBlock->setStyleSheet("background-color: #f5f5f5;");
-    personeAdversBlock->setStyleSheet("background-color: #e0e0e0;");
+    // временное решение для разметки
+    //personBlock->setStyleSheet("background-color: #f5f5f5;");
+    //personeAdversBlock->setStyleSheet("background-color: #e0e0e0;");
 
     gridLayout->addWidget(personBlock, 0, 0);
     gridLayout->addWidget(personeAdversBlock, 1, 0);
 
     QHBoxLayout *userInfoLayout = new QHBoxLayout(personBlock);
+    QGridLayout *salesLayout = new QGridLayout();
 
-    QVBoxLayout *salesLayout = new QVBoxLayout();
     QLabel *salesLabel = new QLabel("Количество продаж", personBlock);
-    QLabel *salesValue = new QLabel("150", personBlock);
-    salesLayout->addWidget(salesLabel);
-    salesLayout->addWidget(salesValue);
+    QLabel *salesValue = new QLabel("{Count}", personBlock);
 
-    QVBoxLayout *avatarLayout = new QVBoxLayout();
+    salesLabel->setAlignment(Qt::AlignCenter);
+    salesValue->setAlignment(Qt::AlignCenter);
+
+    salesLayout->addWidget(salesLabel, 0, 0, Qt::AlignBottom);
+    salesLayout->addWidget(salesValue, 1, 0, Qt::AlignTop);
+
+    QGridLayout *avatarLayout = new QGridLayout();
+    avatarLayout->setContentsMargins(0, 20, 0, 0);
+
     QLabel *avatarLabel = new QLabel(personBlock);
-    avatarLabel->setPixmap(QPixmap(":/avatar/ava").scaled(150, 150, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+    avatarLabel->setObjectName("profileAvatar");
+
+    QPixmap originalPixmap(":/avatar/ava");
+    avatarLabel->setPixmap(createRoundedPixmap(originalPixmap, 90).scaled(160, 160, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+
     QLabel *nameLabel = new QLabel("{Name} {Surname}", personBlock);
-    avatarLayout->addWidget(avatarLabel, 0, Qt::AlignCenter);
-    avatarLayout->addWidget(nameLabel, 0, Qt::AlignCenter);
+    nameLabel->setContentsMargins(0, 10, 0, 0);
+    nameLabel->setAlignment(Qt::AlignCenter);
+
+    avatarLayout->addWidget(avatarLabel, 0, 0, Qt::AlignCenter);
+    avatarLayout->addWidget(nameLabel, 1, 0, Qt::AlignTop);
 
     QVBoxLayout *ratingLayout = new QVBoxLayout(personBlock);
     ratingLayout->setAlignment(Qt::AlignCenter);
-    ratingLayout->setSpacing(0);
-    ratingLayout->setContentsMargins(0, 0, 0, 0);
 
     QLabel *ratingLabel = new QLabel("Рейтинг", personBlock);
     ratingLabel->setAlignment(Qt::AlignCenter);
 
-    QHBoxLayout *starsLayout = new QHBoxLayout();
-    starsLayout->setAlignment(Qt::AlignCenter);
-    starsLayout->setSpacing(0);
-    starsLayout->setContentsMargins(0, 0, 0, 0);
+    QGridLayout *starsGridLayout = new QGridLayout();
+    starsGridLayout->setSpacing(5);
+    starsGridLayout->setContentsMargins(0, 0, 0, 0);
 
+    // Доработать систему отображения рейтинга
     for (int i = 0; i < 5; i++) {
-        QLabel *ratingStars = new QLabel();
-        ratingStars->setPixmap(QPixmap(":/icons/star_empty"));
+        QLabel *ratingStar = new QLabel();
+        ratingStar->setPixmap(QPixmap(":/icons/star_empty").scaled(20, 20, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+        ratingStar->setFixedSize(20, 20);
 
-        qDebug() << "i = " << i;
-
-        starsLayout->addWidget(ratingStars);
+        starsGridLayout->addWidget(ratingStar, 0, i, Qt::AlignCenter);
     }
 
-    ratingLayout->addWidget(ratingLabel, Qt::AlignCenter);
-    ratingLayout->addLayout(starsLayout, Qt::AlignCenter);
+    ratingLayout->addWidget(ratingLabel, 0, Qt::AlignCenter);
+    ratingLayout->addLayout(starsGridLayout);
 
     userInfoLayout->addLayout(salesLayout);
     userInfoLayout->addLayout(avatarLayout);
     userInfoLayout->addLayout(ratingLayout);
 
+    QVBoxLayout *advertsMainLayout = new QVBoxLayout(personeAdversBlock);
+    QHBoxLayout *buttonsLayout = new QHBoxLayout();
+    buttonsLayout->setContentsMargins(20, 0, 0, 0);
+
+    QPushButton *activeAdvertsButton = new QPushButton("Активные", personeAdversBlock);
+    activeAdvertsButton->setObjectName("defaultColorButton");
+    activeAdvertsButton->setFixedSize(100, 30);
+
+    QPushButton *archiveAdvertsButton = new QPushButton("Архив", personeAdversBlock);
+    archiveAdvertsButton->setObjectName("defaultButton");
+    archiveAdvertsButton->setFixedSize(100, 30);
+
+    buttonsLayout->addWidget(activeAdvertsButton);
+    buttonsLayout->addWidget(archiveAdvertsButton);
+    buttonsLayout->setAlignment(Qt::AlignLeft);
+
+    QStackedWidget *advertsListWidget = new QStackedWidget(personeAdversBlock);
+    advertsListWidget->setStyleSheet("background: #D6D6D6");
+
+    // временно лежат тут (возможен перенос)
+    QWidget *activeAdvertsWidget = new QWidget();
+    QWidget *archiveAdvertsWidget = new QWidget();
+
+    advertsListWidget->addWidget(activeAdvertsWidget);
+    advertsListWidget->addWidget(archiveAdvertsWidget);
+
+    // Описание activeAdvertsWidget и archiveAdvertsWidget
+
+    activeAdvertsWidget->setStyleSheet("background: #D6D6D6");
+    archiveAdvertsWidget->setStyleSheet("background: #6771E0");
+
+    // ---
+
+    advertsMainLayout->addLayout(buttonsLayout);
+    advertsMainLayout->addWidget(advertsListWidget);
+
     gridLayout->setRowStretch(0, 1);
     gridLayout->setRowStretch(1, 2);
     gridLayout->setColumnStretch(0, 1);
+
+    // <--- Connects --->
+
+    connect(activeAdvertsButton, &QPushButton::clicked, this, [=]() {
+        advertsListWidget->setCurrentWidget(activeAdvertsWidget);
+    });
+
+    connect(archiveAdvertsButton, &QPushButton::clicked, this, [=]() {
+        advertsListWidget->setCurrentWidget(archiveAdvertsWidget);
+    });
+
 }

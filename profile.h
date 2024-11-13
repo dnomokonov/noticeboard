@@ -6,6 +6,10 @@
 #include <QVBoxLayout>
 #include <QLabel>
 #include <QPushButton>
+#include <QPainter>
+#include <QPainterPath>
+#include <QStackedWidget>
+#include <QStyle>
 
 class profile : public QWidget
 {
