@@ -146,17 +146,15 @@ MainWindow::MainWindow(QWidget *parent)
     QVBoxLayout *bodyLayout = new QVBoxLayout(body);
     bodyLayout->setAlignment(Qt::AlignCenter);
 
-    stackedWidget = new QStackedWidget(body);
-
     listAdverts *allAdvertsList = new listAdverts();
-    createadvertising *createAdComponent = new createadvertising();
+    createadvertising *createAdComponent = new createadvertising(this, this);
     favourites *favouritesComponent = new favourites();
     shoppingcart *shoppingcartComponent = new shoppingcart();
     profile *profileComponent = new profile();
 
-    stackedWidget->addWidget(profileComponent);
     stackedWidget->addWidget(allAdvertsList);
     stackedWidget->addWidget(createAdComponent);
+    stackedWidget->addWidget(profileComponent);
     stackedWidget->addWidget(favouritesComponent);
     stackedWidget->addWidget(shoppingcartComponent);
 
@@ -200,4 +198,8 @@ MainWindow::MainWindow(QWidget *parent)
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+QStackedWidget* MainWindow::getStackedWidget() {
+    return stackedWidget;
 }

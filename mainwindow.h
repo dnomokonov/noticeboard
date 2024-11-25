@@ -23,9 +23,10 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-    QStackedWidget *stackedWidget;
+    QStackedWidget* getStackedWidget();
 
 private:
     Ui::MainWindow *ui;
+    QStackedWidget *stackedWidget = new QStackedWidget(this);
 };
 #endif // MAINWINDOW_H

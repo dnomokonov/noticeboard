@@ -10,12 +10,19 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 
+#include <QDebug>
+
+#include "mainwindow.h"
+
 class createadvertising : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit createadvertising(QWidget *parent = NULL);
+    explicit createadvertising(QWidget *parent = NULL, MainWindow *mainwindow = NULL);
+
+private:
+    MainWindow *mainWindow;
 };
 
 #endif // CREATEADVERTISING_H
