@@ -9,6 +9,8 @@
 #include <QLineEdit>
 #include <QPushButton>
 #include <QStackedWidget>
+#include <QDialog>
+#include <QComboBox>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -28,5 +30,6 @@ public:
 private:
     Ui::MainWindow *ui;
     QStackedWidget *stackedWidget = new QStackedWidget(this);
+    QString locationCityNow = "none";
 };
 #endif // MAINWINDOW_H

@@ -162,6 +162,47 @@ MainWindow::MainWindow(QWidget *parent)
     bodyLayout->addWidget(stackedWidget);
     body->setLayout(bodyLayout);
 
+    // <--- Dialog's --->
+
+    QDialog *citySelectDialog = new QDialog(this);
+    citySelectDialog->setObjectName("citySelectDialog");
+    citySelectDialog->setWindowTitle("Выбор города");
+    //citySelectDialog->setModal(true);
+    citySelectDialog->setFixedSize(200, 140);
+
+    QGridLayout *cityDialogLayout = new QGridLayout(citySelectDialog);
+
+    QLabel *citySelectLabel = new QLabel("Выберите свой город", citySelectDialog);
+    citySelectLabel->setObjectName("citySelectLabel");
+    QComboBox *citySelectCombo = new QComboBox(citySelectDialog);
+    citySelectCombo->setObjectName("categoryCustom");
+    citySelectCombo->setFixedWidth(150);
+    citySelectCombo->addItems(
+        {
+            "Москва",
+            "Новосибирск",
+            "Омск",
+            "Санкт-Петербург",
+            "Нижний Новгород",
+            "Краснодар",
+            "Чита",
+            "Красноярск",
+            "Якутск",
+            "Благовещенск",
+            "Хабаровск"
+        }
+    );
+
+    QPushButton *btnCityDialog = new QPushButton("Сохранить", citySelectDialog);
+    btnCityDialog->setObjectName("defaultColorButton");
+    btnCityDialog->setFixedSize(110, 30);
+
+    cityDialogLayout->addWidget(citySelectLabel, 0, 0, Qt::AlignCenter);
+    cityDialogLayout->addWidget(citySelectCombo, 1, 0, Qt::AlignCenter);
+    cityDialogLayout->setSpacing(12);
+    cityDialogLayout->addWidget(btnCityDialog, 2, 0, Qt::AlignCenter);
+
+
     // <--- Grid Layout Add's --->
     gridLayout->addWidget(header, 0, 0, 1, 2);
     gridLayout->addWidget(body, 1, 0);
@@ -192,6 +233,15 @@ MainWindow::MainWindow(QWidget *parent)
     connect(profileBtn, &QPushButton::clicked, this, [=]() {
         qDebug() << "Hello, profileBtn!";
         stackedWidget->setCurrentWidget(profileComponent);
+    });
+
+    connect(geoButton, &QPushButton::clicked, this, [=]() {
+        citySelectDialog->exec();
+    });
+
+    connect(btnCityDialog, &QPushButton::clicked, citySelectDialog, [=]{
+        locationCityNow = citySelectCombo->currentText();
+        citySelectDialog->accept();
     });
 }
 
