@@ -226,5 +226,18 @@ QLabel {
 
 /* Dialog */
 
+#customQListWidget {
+    color: black;
+    background-color: #FFFFFF;
+}
 
+#customQListWidget::item:hover {
+    background-color: #EFEFEF;
+    border: 1px solid #6771E0;
+}
+
+#customQListWidget::item:selected {
+    background-color: #6771E0;
+    color: white;
+}
 

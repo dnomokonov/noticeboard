@@ -11,6 +11,8 @@
 #include <QStackedWidget>
 #include <QDialog>
 #include <QComboBox>
+#include <QListWidget>
+#include <QStringList>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {

@@ -5,9 +5,9 @@
 #include "favourites.h"
 #include "shoppingcart.h"
 #include "profile.h"
-#include "adsfound.h"
+//#include "adsfound.h"
 #include "listadverts.h"
-#include "viewingad.h" // временное решение
+//#include "viewingad.h" // временное решение
 
 #include <QDebug>
 
@@ -164,10 +164,41 @@ MainWindow::MainWindow(QWidget *parent)
 
     // <--- Dialog's --->
 
+    QDialog *categoriesDialog = new QDialog(this);
+    categoriesDialog->setWindowTitle("Категории");
+    categoriesDialog->setFixedSize(320, 250);
+
+    QGridLayout *categDialogLayout = new QGridLayout(categoriesDialog);
+
+    QLabel *categSelectLabel = new QLabel("Выбирите категории товаров", categoriesDialog);
+    categSelectLabel->setObjectName("categSelectLabel");
+
+    QListWidget *listCategories = new QListWidget();
+    listCategories->setObjectName("customQListWidget");
+    QStringList categories = {"Электроника", "Одежда", "Дом и сад", "Авто", "Недвижимость", "Услуги"};
+    listCategories->setSelectionMode(QAbstractItemView::MultiSelection);
+    listCategories->addItems(categories);
+
+    QHBoxLayout *btnCategDialogLayout = new QHBoxLayout(categoriesDialog);
+
+    QPushButton *saveCategSelect = new QPushButton("Применить", categoriesDialog);
+    saveCategSelect->setObjectName("defaultColorButton");
+    saveCategSelect->setFixedSize(120, 30);
+
+    QPushButton *clearCategSelect = new QPushButton("Очистить", categoriesDialog);
+    clearCategSelect->setObjectName("defaultButton");
+    clearCategSelect->setFixedSize(120, 30);
+
+    btnCategDialogLayout->addWidget(saveCategSelect, 0);
+    btnCategDialogLayout->addWidget(clearCategSelect, 1);
+
+    categDialogLayout->addWidget(categSelectLabel, 0, 0);
+    categDialogLayout->addWidget(listCategories, 1, 0);
+    categDialogLayout->addLayout(btnCategDialogLayout, 2, 0, Qt::AlignCenter);
+
     QDialog *citySelectDialog = new QDialog(this);
     citySelectDialog->setObjectName("citySelectDialog");
-    citySelectDialog->setWindowTitle("Выбор города");
-    //citySelectDialog->setModal(true);
+    citySelectDialog->setWindowTitle("Геолокация");
     citySelectDialog->setFixedSize(200, 140);
 
     QGridLayout *cityDialogLayout = new QGridLayout(citySelectDialog);
@@ -177,6 +208,7 @@ MainWindow::MainWindow(QWidget *parent)
     QComboBox *citySelectCombo = new QComboBox(citySelectDialog);
     citySelectCombo->setObjectName("categoryCustom");
     citySelectCombo->setFixedWidth(150);
+    citySelectCombo->setMaxVisibleItems(5);
     citySelectCombo->addItems(
         {
             "Москва",
@@ -201,7 +233,6 @@ MainWindow::MainWindow(QWidget *parent)
     cityDialogLayout->addWidget(citySelectCombo, 1, 0, Qt::AlignCenter);
     cityDialogLayout->setSpacing(12);
     cityDialogLayout->addWidget(btnCityDialog, 2, 0, Qt::AlignCenter);
-
 
     // <--- Grid Layout Add's --->
     gridLayout->addWidget(header, 0, 0, 1, 2);
@@ -242,6 +273,27 @@ MainWindow::MainWindow(QWidget *parent)
     connect(btnCityDialog, &QPushButton::clicked, citySelectDialog, [=]{
         locationCityNow = citySelectCombo->currentText();
         citySelectDialog->accept();
+    });
+
+    connect(categoryButton, &QPushButton::clicked, this, [=]{
+        categoriesDialog->exec();
+    });
+
+    connect(saveCategSelect, &QPushButton::clicked, categoriesDialog, [=]{
+        QList<QListWidgetItem *> selectedItems = listCategories->selectedItems();
+        QStringList selectedCategories;
+
+        for (QListWidgetItem *item : selectedItems) {
+            selectedCategories << item->text();
+        }
+
+        qDebug() << selectedCategories;
+
+        categoriesDialog->accept();
+    });
+
+    connect(clearCategSelect, &QPushButton::clicked, categoriesDialog, [=]{
+        listCategories->clearSelection();
     });
 }
 
