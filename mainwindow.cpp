@@ -158,7 +158,6 @@ MainWindow::MainWindow(QWidget *parent)
     stackedWidget->addWidget(favouritesComponent);
     stackedWidget->addWidget(shoppingcartComponent);
 
-
     bodyLayout->addWidget(stackedWidget);
     body->setLayout(bodyLayout);
 
@@ -272,6 +271,9 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(btnCityDialog, &QPushButton::clicked, citySelectDialog, [=]{
         locationCityNow = citySelectCombo->currentText();
+
+        keeper->setCurrentLocation(locationCityNow);
+
         citySelectDialog->accept();
     });
 
@@ -289,6 +291,8 @@ MainWindow::MainWindow(QWidget *parent)
 
         qDebug() << selectedCategories;
 
+        keeper->setSelectedCategories(selectedCategories);
+
         categoriesDialog->accept();
     });
 
@@ -300,6 +304,7 @@ MainWindow::MainWindow(QWidget *parent)
 MainWindow::~MainWindow()
 {
     delete ui;
+    delete keeper;
 }
 
 QStackedWidget* MainWindow::getStackedWidget() {

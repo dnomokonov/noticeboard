@@ -14,6 +14,8 @@
 #include <QListWidget>
 #include <QStringList>
 
+#include "keeperdata.h"
+
 QT_BEGIN_NAMESPACE
 namespace Ui {
 class MainWindow;
@@ -28,10 +30,12 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
     QStackedWidget* getStackedWidget();
+    KeeperData* getKeeperClass();
 
 private:
     Ui::MainWindow *ui;
     QStackedWidget *stackedWidget = new QStackedWidget(this);
     QString locationCityNow = "none";
+    KeeperData* keeper = new KeeperData();
 };
 #endif // MAINWINDOW_H

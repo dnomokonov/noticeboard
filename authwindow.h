@@ -2,6 +2,13 @@
 #define AUTHWINDOW_H
 
 #include <QMainWindow>
+#include <QSqlDatabase>
+#include <QSqlQuery>
+#include <QSqlError>
+#include <QMessageBox>
+#include <QDebug>
+
+#include "keeperdata.h"
 
 namespace Ui {
 class AuthWindow;
@@ -17,6 +24,9 @@ public:
 
 private:
     Ui::AuthWindow *ui;
+    bool connectToDatabase();
+    KeeperData* keeper;
+
 };
 
 #endif // AUTHWINDOW_H

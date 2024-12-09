@@ -4,6 +4,8 @@
 #include <QString>
 #include <QList>
 #include <QPixmap>
+#include <QStringList>
+#include <QSettings>
 
 class KeeperData
 {
@@ -14,6 +16,8 @@ public:
         surnamePerson = sunameper;
         isAuthPerson = authStatus;
         locationCityNow = locationNow;
+
+        loadFromSettings();
     };
 
 // Receipt data
@@ -23,6 +27,7 @@ public:
     QPixmap getUserAvatar();
     bool getAuthStatus();
     QString getCurrentLocation();
+    QStringList getSelectedCategories();
 
 // Change data
     void setUsername(QString newUsername);
@@ -31,6 +36,11 @@ public:
     void setUserAvatar(QPixmap newAvatar);
     void setAuthStatus(bool newAuthStatus);
     void setCurrentLocation(QString newGeo);
+    void setSelectedCategories(QStringList newSelected);
+
+// Settings
+    void loadFromSettings();
+    void saveToSettings();
 
 private:
 // Info about user
@@ -39,10 +49,9 @@ private:
     QString surnamePerson;
     QPixmap userAvatar;
     bool isAuthPerson;
-
 // Info about user select geo or categories
     QString locationCityNow;
-    QList<QString> selectedCategories;
+    QStringList selectedCategories;
 
 };
 

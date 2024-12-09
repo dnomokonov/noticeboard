@@ -23,6 +23,10 @@ AuthWindow::AuthWindow(QWidget *parent)
         this->setStyleSheet(styleSheet);
     }
 
+    if (connectToDatabase()) {
+        qDebug() << "Connect successfully!";
+    }
+
     QWidget *centralWidget = new QWidget(this);
     this->setCentralWidget(centralWidget);
 
@@ -71,6 +75,7 @@ AuthWindow::AuthWindow(QWidget *parent)
 
     QLineEdit *loginUsernameField = new QLineEdit(loginPage);
     QLineEdit *loginPasswordField = new QLineEdit(loginPage);
+    loginPasswordField->setEchoMode(QLineEdit::Password);
 
     loginUsernameField->setPlaceholderText("Username");
     loginPasswordField->setPlaceholderText("Password");
@@ -84,12 +89,12 @@ AuthWindow::AuthWindow(QWidget *parent)
     headerFormLayout->addStretch();
 
     QPushButton *loginBtn = new QPushButton("Войти", loginPage);
-    loginBtn->setObjectName("authBtn");
-    loginBtn->setFixedSize(250, 30);
+    loginBtn->setObjectName("defaultColorButton");
+    loginBtn->setFixedSize(200, 32);
 
     QPushButton *switchToRegisterBtn = new QPushButton("Регистрация", loginPage);
-    switchToRegisterBtn->setObjectName("authBtn");
-    switchToRegisterBtn->setFixedSize(250, 30);
+    switchToRegisterBtn->setObjectName("defaultColorButton");
+    switchToRegisterBtn->setFixedSize(200, 32);
 
     QHBoxLayout *loginBtnLayout = new QHBoxLayout();
     loginBtnLayout->addStretch();
@@ -143,10 +148,12 @@ AuthWindow::AuthWindow(QWidget *parent)
     headerFormRegLayout->addStretch();
 
     QPushButton *registerBtn = new QPushButton("Зарегистрироваться", registerPage);
-    registerBtn->setFixedSize(250, 30);
+    registerBtn->setObjectName("defaultColorButton");
+    registerBtn->setFixedSize(200, 32);
 
     QPushButton *switchToLoginBtn = new QPushButton("Вход", registerPage);
-    switchToLoginBtn->setFixedSize(250, 30);
+    switchToLoginBtn->setObjectName("defaultColorButton");
+    switchToLoginBtn->setFixedSize(200, 32);
 
     QHBoxLayout *regbtnLayout = new QHBoxLayout();
     QHBoxLayout *logbtnLayout = new QHBoxLayout();
@@ -174,6 +181,60 @@ AuthWindow::AuthWindow(QWidget *parent)
 
     // <--- Connects --->
 
+    connect(loginBtn, &QPushButton::clicked, this, [=]{
+        QString username = loginUsernameField->text();
+        QString password = loginPasswordField->text();
+
+        if (username.isEmpty() || password.isEmpty()) {
+            QMessageBox::warning(this, "Ошибка", "Заполните все поля");
+            return;
+        }
+
+        QSqlQuery query;
+        query.prepare("SELECT * FROM Users WHERE username = :username AND password = :password");
+        query.bindValue(":username", username);
+        query.bindValue(":password", password);
+
+        if (!query.exec() || !query.next()) {
+            QMessageBox::warning(this, "Ошибка", "Неправильный логин или пароль.");
+        } else {
+            QMessageBox::information(this, "Успех", "Добро пожаловать, " + query.value("name").toString() + "!");
+
+        }
+    });
+
+    connect(registerBtn, &QPushButton::clicked, this, [=]{
+        QString username = registerUsernameField->text();
+        QString password = registerPasswordField->text();
+        QString confirmPassword = confirmPasswordField->text();
+        QString name = registerNameField->text();
+        QString surname = registerSurnameField->text();
+
+        if (username.isEmpty() || password.isEmpty() || confirmPassword.isEmpty() || name.isEmpty() || surname.isEmpty()) {
+            QMessageBox::warning(this, "Ошибка", "Пожалуйста, заполните все поля");
+            return;
+        }
+
+        if (confirmPassword != password) {
+            QMessageBox::warning(this, "Ошибка", "Пароли не совпадают");
+            return;
+        }
+
+        QSqlQuery query;
+        query.prepare("INSERT INTO Users (username, password, name, surname) VALUES (:username, :password, :name, :surname)");
+        query.bindValue(":username", username);
+        query.bindValue(":password", password);
+        query.bindValue(":name", name);
+        query.bindValue(":surname", surname);
+
+        if (!query.exec()) {
+            QMessageBox::warning(this, "Ошибка", "Ошибка регистрации: " + query.lastError().text());
+        } else {
+            QMessageBox::information(this, "Успех", "Регистрация прошла успешно.");
+            stackedWidget->setCurrentWidget(loginPage);
+        }
+    });
+
     connect(switchToRegisterBtn, &QPushButton::clicked, [=]() {
         stackedWidget->setCurrentWidget(registerPage);
     });
@@ -186,4 +247,20 @@ AuthWindow::AuthWindow(QWidget *parent)
 AuthWindow::~AuthWindow()
 {
     delete ui;
+}
+
+bool AuthWindow::connectToDatabase() {
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+
+    QString dbPath = QCoreApplication::applicationDirPath() + "../../../noticeboard.db";
+    db.setDatabaseName(dbPath);
+
+    if (!db.open()) {
+        qDebug() << "Ошибка подключения к базе данных:" << db.lastError().text();
+        return false;
+    }
+
+    qDebug() << "База данных успешно подключена!";
+
+    return true;
 }

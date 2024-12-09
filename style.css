@@ -51,6 +51,13 @@ QLabel {
     background-color: #5c65c4;
 }
 
+#defaultField {
+    padding: 8px;
+    border-radius: 15px;
+    color: black;
+    background-color: #D9D9D9;
+}
+
 #headerName {
     color: black;
     font-size: 25px;
