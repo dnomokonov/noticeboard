@@ -9,6 +9,10 @@
 #include <QPushButton>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
+#include <QPixmap>
+#include <QMessageBox>
+#include <QFileDialog>
+#include <QBuffer>
 
 #include <QDebug>
 
@@ -23,6 +27,7 @@ public:
 
 private:
     MainWindow *mainWindow;
+    KeeperData* keeper = mainWindow->getKeeperData();
 };
 
 #endif // CREATEADVERTISING_H

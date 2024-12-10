@@ -6,9 +6,18 @@
 #include <QSqlQuery>
 #include <QSqlError>
 #include <QMessageBox>
+#include <QSettings>
 #include <QDebug>
 
-#include "keeperdata.h"
+#include <QGridLayout>
+#include <QLabel>
+#include <QPixmap>
+#include <QHBoxLayout>
+#include <QPushButton>
+#include <QStackedWidget>
+#include <QLineEdit>
+#include <QVBoxLayout>
+#include <QFile>
 
 namespace Ui {
 class AuthWindow;
@@ -25,8 +34,7 @@ public:
 private:
     Ui::AuthWindow *ui;
     bool connectToDatabase();
-    KeeperData* keeper;
-
+    void openMainWindowUI();
 };
 
 #endif // AUTHWINDOW_H

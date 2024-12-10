@@ -1,6 +1,9 @@
 #include "keeperdata.h"
 
 // Receipt data
+int KeeperData::getUserID() {
+    return userID;
+}
 
 QString KeeperData::getUsername() {
     return username;
@@ -12,6 +15,14 @@ QString KeeperData::getNamePerson() {
 
 QString KeeperData::getSurnamePerson() {
     return surnamePerson;
+}
+
+double KeeperData::getRatingUser() {
+    return ratingUser;
+}
+
+int KeeperData::getSalesUser() {
+    return salesUser;
 }
 
 QPixmap KeeperData::getUserAvatar() {
@@ -31,6 +42,10 @@ QStringList KeeperData::getSelectedCategories() {
 }
 
 // Change data
+void KeeperData::setUserID(int newID) {
+    userID = newID;
+    saveToSettings();
+}
 
 void KeeperData::setUsername(QString newUsername) {
     username = newUsername;
@@ -44,6 +59,16 @@ void KeeperData::setNamePerson(QString newName) {
 
 void KeeperData::setSurnamePerson(QString newSurname) {
     surnamePerson = newSurname;
+    saveToSettings();
+}
+
+void KeeperData::setRatingUser(double newRating) {
+    ratingUser = newRating;
+    saveToSettings();
+}
+
+void KeeperData::setSalesUser(int newSalesCount) {
+    salesUser = newSalesCount;
     saveToSettings();
 }
 
@@ -75,6 +100,7 @@ void KeeperData::loadFromSettings() {
     username = settings.value("username", username).toString();
     namePerson = settings.value("namePerson", namePerson).toString();
     surnamePerson = settings.value("surnamePerson", surnamePerson).toString();
+    ratingUser = settings.value("ratingUser", ratingUser).toDouble();
     isAuthPerson = settings.value("isAuthPerson", isAuthPerson).toBool();
     locationCityNow = settings.value("locationCityNow", locationCityNow).toString();
     selectedCategories = settings.value("selectedCategories", selectedCategories).toStringList();
@@ -86,6 +112,7 @@ void KeeperData::saveToSettings() {
     settings.setValue("username", username);
     settings.setValue("namePerson", namePerson);
     settings.setValue("surnamePerson", surnamePerson);
+    settings.setValue("ratingUser", ratingUser);
     settings.setValue("isAuthPerson", isAuthPerson);
     settings.setValue("locationCityNow", locationCityNow);
     settings.setValue("selectedCategories", selectedCategories);

@@ -14,6 +14,10 @@
 #include <QListWidget>
 #include <QStringList>
 
+#include <QSqlDatabase>
+#include <QSqlQuery>
+#include <QSqlError>
+
 #include "keeperdata.h"
 
 QT_BEGIN_NAMESPACE
@@ -30,12 +34,14 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
     QStackedWidget* getStackedWidget();
-    KeeperData* getKeeperClass();
+    KeeperData *getKeeperData();
 
 private:
     Ui::MainWindow *ui;
     QStackedWidget *stackedWidget = new QStackedWidget(this);
     QString locationCityNow = "none";
     KeeperData* keeper = new KeeperData();
+    bool connectToDatabase();
+    void openWindowAuth();
 };
 #endif // MAINWINDOW_H

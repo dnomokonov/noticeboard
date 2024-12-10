@@ -9,6 +9,8 @@
 #include "listadverts.h"
 //#include "viewingad.h" // временное решение
 
+#include "authwindow.h"
+
 #include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent)
@@ -16,6 +18,44 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    keeper->loadFromSettings();
+
+    if (connectToDatabase()) {
+        qDebug() << "Connect successfully!";
+    }
+
+    if (keeper->getAuthStatus()) {
+        QString username = keeper->getUsername();
+        qDebug() << "Загружен пользователь:" << username;
+
+        QSqlQuery query;
+        query.prepare("SELECT id, name, surname, rating, sales FROM Users WHERE username = :username");
+        query.bindValue(":username", username);
+
+        if (query.exec() && query.next()) {
+            int id_user = query.value("id").toInt();
+            QString name = query.value("name").toString();
+            QString surname = query.value("surname").toString();
+            double ratingUser = query.value("rating").toDouble();
+            int salesCount = query.value("sales").toInt();
+
+            keeper->setUserID(id_user);
+            keeper->setNamePerson(name);
+            keeper->setSurnamePerson(surname);
+            keeper->setRatingUser(ratingUser);
+            keeper->setSalesUser(salesCount);
+
+            qDebug() << "Данные пользователя загружены:"
+                     << "ID:" << id_user
+                     << "Name:" << name
+                     << "Surname:" << surname
+                     << "Rating:" << ratingUser
+                     << "Sales:" << salesCount;
+        } else {
+            qDebug() << "Не удалось загрузить данные пользователя:" << query.lastError().text();
+        }
+    }
 
     QFile styleFile(":/styles/style.css");
     if (styleFile.open(QFile::ReadOnly)) {
@@ -146,7 +186,7 @@ MainWindow::MainWindow(QWidget *parent)
     QVBoxLayout *bodyLayout = new QVBoxLayout(body);
     bodyLayout->setAlignment(Qt::AlignCenter);
 
-    listAdverts *allAdvertsList = new listAdverts();
+    listAdverts *allAdvertsList = new listAdverts(this, this);
     createadvertising *createAdComponent = new createadvertising(this, this);
     favourites *favouritesComponent = new favourites();
     shoppingcart *shoppingcartComponent = new shoppingcart();
@@ -241,28 +281,43 @@ MainWindow::MainWindow(QWidget *parent)
 
     // <--- Connects --->
     connect(logo, &QPushButton::clicked, this, [=]() {
-        qDebug() << "Hello, allAdvertsList!";
         stackedWidget->setCurrentWidget(allAdvertsList);
     });
 
     connect(btnAddNotice, &QPushButton::clicked, this, [=]() {
-        qDebug() << "Hello, btnAddNotice!";
-        stackedWidget->setCurrentWidget(createAdComponent);
+        if (keeper->getAuthStatus()) {
+            stackedWidget->setCurrentWidget(createAdComponent);
+        } else {
+            openWindowAuth();
+            this->close();
+        }
     });
 
     connect(favBtn, &QPushButton::clicked, this, [=]() {
-        qDebug() << "Hello, favBtn!";
-        stackedWidget->setCurrentWidget(favouritesComponent);
+        if (keeper->getAuthStatus()) {
+            stackedWidget->setCurrentWidget(favouritesComponent);
+        } else {
+            openWindowAuth();
+            this->close();
+        }
     });
 
     connect(shopbagBtn, &QPushButton::clicked, this, [=]() {
-        qDebug() << "Hello, shopbagBtn!";
-        stackedWidget->setCurrentWidget(shoppingcartComponent);
+        if (keeper->getAuthStatus()) {
+            stackedWidget->setCurrentWidget(shoppingcartComponent);
+        } else {
+            openWindowAuth();
+            this->close();
+        }
     });
 
     connect(profileBtn, &QPushButton::clicked, this, [=]() {
-        qDebug() << "Hello, profileBtn!";
-        stackedWidget->setCurrentWidget(profileComponent);
+        if (keeper->getAuthStatus()) {
+            stackedWidget->setCurrentWidget(profileComponent);
+        } else {
+            openWindowAuth();
+            this->close();
+        }
     });
 
     connect(geoButton, &QPushButton::clicked, this, [=]() {
@@ -305,8 +360,36 @@ MainWindow::~MainWindow()
 {
     delete ui;
     delete keeper;
+
+    QSettings settings("bydn", "noticeboard");
+    settings.clear();
 }
 
 QStackedWidget* MainWindow::getStackedWidget() {
     return stackedWidget;
+}
+
+bool MainWindow::connectToDatabase() {
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+
+    QString dbPath = QCoreApplication::applicationDirPath() + "../../../noticeboard.db";
+    db.setDatabaseName(dbPath);
+
+    if (!db.open()) {
+        qDebug() << "Ошибка подключения к базе данных:" << db.lastError().text();
+        return false;
+    }
+
+    qDebug() << "База данных успешно подключена!";
+
+    return true;
+}
+
+void MainWindow::openWindowAuth() {
+    AuthWindow *authWindow = new AuthWindow();
+    authWindow->show();
+}
+
+KeeperData* MainWindow::getKeeperData() {
+    return keeper;
 }

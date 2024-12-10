@@ -12,8 +12,8 @@ int main(int argc, char *argv[])
     file.open(QFile::ReadOnly);
     a.setStyleSheet(file.readAll());
 
-    //MainWindow w;
-    AuthWindow w;
+    MainWindow w;
+    //AuthWindow w;
     w.show();
     return a.exec();
 }

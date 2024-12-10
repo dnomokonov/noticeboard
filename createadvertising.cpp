@@ -1,6 +1,10 @@
     #include "createadvertising.h"
 
 createadvertising::createadvertising(QWidget *parent, MainWindow *mainwindow) : QWidget(parent), mainWindow(mainwindow) {
+    keeper->loadFromSettings();
+
+    qDebug() << "UserID keeper:" << keeper->getUserID();
+
     QFile styleFile(":/styles/style.css");
     if (styleFile.open(QFile::ReadOnly)) {
         QString styleSheet = QLatin1String(styleFile.readAll());
@@ -35,16 +39,24 @@ createadvertising::createadvertising(QWidget *parent, MainWindow *mainwindow) : 
 
     QLabel *priceLabel = new QLabel("Цена:");
     priceLabel->setObjectName("titleLabelCreateBlock");
+
     QLineEdit *priceEdit = new QLineEdit();
     priceEdit->setFixedWidth(550);
     priceEdit->setObjectName("customFieldCreateAd");
     priceEdit->setPlaceholderText("Введите цену");
-    priceEdit->setValidator(new QDoubleValidator(0, 1000000, 2, this));
+    // priceEdit->setValidator(new QDoubleValidator(0, 1000000, 2, this));
+
+    QDoubleValidator *validator = new QDoubleValidator(0, 1000000, 2, this);
+    validator->setLocale(QLocale::C);
+    QLocale locale = QLocale(QLocale::Russian);
+    locale.setNumberOptions(QLocale::RejectGroupSeparator);
+    validator->setLocale(locale);
+    priceEdit->setValidator(validator);
 
     QLabel *phoneLabel = new QLabel("Номер телефона:");
     phoneLabel->setObjectName("titleLabelCreateBlock");
     QLineEdit *phoneEdit = new QLineEdit();
-    phoneEdit->setMaxLength(15);
+    phoneEdit->setMaxLength(12);
     phoneEdit->setFixedWidth(550);
     phoneEdit->setObjectName("customFieldCreateAd");
     phoneEdit->setPlaceholderText("Введите номер телефона");
@@ -133,12 +145,88 @@ createadvertising::createadvertising(QWidget *parent, MainWindow *mainwindow) : 
     mainLayout->addLayout(centerLayout);
     setLayout(mainLayout);
 
+    connect(submitButton, &QPushButton::clicked, this, [=]() {
+        QString title = titleEdit->text();
+        QString description = descriptionEdit->toPlainText();
+        QString category = categoryCombo->currentText();
+
+        QLocale locale = QLocale(QLocale::Russian);
+        double cost = locale.toDouble(priceEdit->text());
+
+        QString phone = phoneEdit->text();
+        QString location = cityEdit->text() + ", " + streetEdit->text() + ", " + houseEdit->text();
+
+        qDebug() << "Cost = " << cost;
+
+        if (title.isEmpty() || description.isEmpty() || category.isEmpty() || cost <= 0 || phone.isEmpty() || location.isEmpty()) {
+            QMessageBox::warning(this, "Ошибка", "Пожалуйста, заполните все обязательные поля.");
+            return;
+        }
+
+        qDebug() << "Phone: " << phone;
+
+        QRegularExpression phoneRegex("^\\+7\\d{10}$");
+        if (!phoneRegex.match(phone).hasMatch()) {
+            QMessageBox::warning(this, "Ошибка", "Введите номер телефона в формате +7XXXXXXXXXX.");
+            return;
+        }
+
+        QPixmap pixmap = imageDisplay->pixmap();
+        if (pixmap.isNull()) {
+            QMessageBox::warning(this, "Ошибка", "Пожалуйста, загрузите изображение.");
+            return;
+        }
+
+        QByteArray imageBytes;
+        QBuffer buffer(&imageBytes);
+        buffer.open(QIODevice::WriteOnly);
+        pixmap.save(&buffer, "PNG");
+
+        QSqlQuery query;
+        query.prepare("INSERT INTO Announcements (id_user, title, description, category, cost, phone, location, photo) "
+                      "VALUES (:id_user, :title, :description, :category, :cost, :phone, :location, :photo)");
+        query.bindValue(":id_user", keeper->getUserID());
+        query.bindValue(":title", title);
+        query.bindValue(":description", description);
+        query.bindValue(":category", category);
+        query.bindValue(":cost", cost);
+        query.bindValue(":phone", phone);
+        query.bindValue(":location", location);
+        query.bindValue(":photo", imageBytes);
+
+        if (!query.exec()) {
+            QMessageBox::critical(this, "Ошибка", "Не удалось добавить объявление: " + query.lastError().text());
+        } else {
+            QMessageBox::information(this, "Успех", "Объявление успешно добавлено!");
+
+            titleEdit->clear();
+            descriptionEdit->clear();
+            categoryCombo->setCurrentIndex(0);
+            priceEdit->clear();
+            phoneEdit->clear();
+            cityEdit->clear();
+            streetEdit->clear();
+            houseEdit->clear();
+            imageDisplay->clear();
+        }
+    });
+
+    connect(uploadImageButton, &QPushButton::clicked, this, [=]() {
+        QString filePath = QFileDialog::getOpenFileName(this, "Выберите изображение", "", "Images (*.png *.jpg *.jpeg *.bmp)");
+        if (!filePath.isEmpty()) {
+            QPixmap pixmap(filePath);
+            if (!pixmap.isNull()) {
+                imageDisplay->setPixmap(pixmap.scaled(imageDisplay->size(), Qt::KeepAspectRatio));
+            } else {
+                QMessageBox::warning(this, "Ошибка", "Не удалось загрузить изображение.");
+            }
+        }
+    });
+
     connect(cancelButton, &QPushButton::clicked, this, [=]() {
         if (mainwindow) {
             QStackedWidget *stackedWidget = mainwindow->getStackedWidget();
             stackedWidget->setCurrentIndex(0);
-        } else {
-            qDebug() << "MainWindow is nullptr!";
         }
     });
 

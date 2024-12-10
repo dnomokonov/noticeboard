@@ -1,15 +1,7 @@
 #include "authwindow.h"
 #include "ui_authwindow.h"
 
-#include <QGridLayout>
-#include <QLabel>
-#include <QPixmap>
-#include <QHBoxLayout>
-#include <QPushButton>
-#include <QStackedWidget>
-#include <QLineEdit>
-#include <QVBoxLayout>
-#include <QFile>
+#include "mainwindow.h"
 
 AuthWindow::AuthWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -93,7 +85,7 @@ AuthWindow::AuthWindow(QWidget *parent)
     loginBtn->setFixedSize(200, 32);
 
     QPushButton *switchToRegisterBtn = new QPushButton("Регистрация", loginPage);
-    switchToRegisterBtn->setObjectName("defaultColorButton");
+    switchToRegisterBtn->setObjectName("defaultButton");
     switchToRegisterBtn->setFixedSize(200, 32);
 
     QHBoxLayout *loginBtnLayout = new QHBoxLayout();
@@ -152,7 +144,7 @@ AuthWindow::AuthWindow(QWidget *parent)
     registerBtn->setFixedSize(200, 32);
 
     QPushButton *switchToLoginBtn = new QPushButton("Вход", registerPage);
-    switchToLoginBtn->setObjectName("defaultColorButton");
+    switchToLoginBtn->setObjectName("defaultButton");
     switchToLoginBtn->setFixedSize(200, 32);
 
     QHBoxLayout *regbtnLayout = new QHBoxLayout();
@@ -200,6 +192,12 @@ AuthWindow::AuthWindow(QWidget *parent)
         } else {
             QMessageBox::information(this, "Успех", "Добро пожаловать, " + query.value("name").toString() + "!");
 
+            QSettings settings("bydn", "noticeboard");
+            settings.setValue("username", username);
+            settings.setValue("isAuthPerson", true);
+
+            openMainWindowUI();
+            this->close();
         }
     });
 
@@ -221,11 +219,12 @@ AuthWindow::AuthWindow(QWidget *parent)
         }
 
         QSqlQuery query;
-        query.prepare("INSERT INTO Users (username, password, name, surname) VALUES (:username, :password, :name, :surname)");
+        query.prepare("INSERT INTO Users (username, password, name, surname, rating) VALUES (:username, :password, :name, :surname, :rating)");
         query.bindValue(":username", username);
         query.bindValue(":password", password);
         query.bindValue(":name", name);
         query.bindValue(":surname", surname);
+         query.bindValue(":rating", 0);
 
         if (!query.exec()) {
             QMessageBox::warning(this, "Ошибка", "Ошибка регистрации: " + query.lastError().text());
@@ -263,4 +262,9 @@ bool AuthWindow::connectToDatabase() {
     qDebug() << "База данных успешно подключена!";
 
     return true;
+}
+
+void AuthWindow::openMainWindowUI() {
+    MainWindow *mainWindow = new MainWindow();
+    mainWindow->show();
 }
