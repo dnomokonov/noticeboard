@@ -17,6 +17,9 @@ QPixmap createRoundedPixmap(const QPixmap &src, int radius) {
 }
 
 profile::profile(QWidget *parent) : QWidget(parent) {
+
+    keeper->loadFromSettings();
+
     QFile styleFile(":/styles/style.css");
     if (styleFile.open(QFile::ReadOnly)) {
         QString styleSheet = QLatin1String(styleFile.readAll());
@@ -28,18 +31,16 @@ profile::profile(QWidget *parent) : QWidget(parent) {
     QWidget *personBlock = new QWidget(this);
     QWidget *personeAdversBlock = new QWidget(this);
 
-    // временное решение для разметки
-    //personBlock->setStyleSheet("background-color: #f5f5f5;");
-    //personeAdversBlock->setStyleSheet("background-color: #e0e0e0;");
-
     gridLayout->addWidget(personBlock, 0, 0);
     gridLayout->addWidget(personeAdversBlock, 1, 0);
 
     QHBoxLayout *userInfoLayout = new QHBoxLayout(personBlock);
     QGridLayout *salesLayout = new QGridLayout();
 
+    int salesUser = keeper->getSalesUser();
+    QString salesCount = QString::number(salesUser);
     QLabel *salesLabel = new QLabel("Количество продаж", personBlock);
-    QLabel *salesValue = new QLabel("{Count}", personBlock);
+    QLabel *salesValue = new QLabel(salesCount, personBlock);
 
     salesLabel->setAlignment(Qt::AlignCenter);
     salesValue->setAlignment(Qt::AlignCenter);
@@ -56,7 +57,9 @@ profile::profile(QWidget *parent) : QWidget(parent) {
     QPixmap originalPixmap(":/avatar/ava");
     avatarLabel->setPixmap(createRoundedPixmap(originalPixmap, 90).scaled(160, 160, Qt::KeepAspectRatio, Qt::SmoothTransformation));
 
-    QLabel *nameLabel = new QLabel("{Name} {Surname}", personBlock);
+    QString FullName = keeper->getNamePerson() + " " + keeper->getSurnamePerson();
+
+    QLabel *nameLabel = new QLabel(FullName, personBlock);
     nameLabel->setContentsMargins(0, 10, 0, 0);
     nameLabel->setAlignment(Qt::AlignCenter);
 
@@ -76,7 +79,12 @@ profile::profile(QWidget *parent) : QWidget(parent) {
     // Доработать систему отображения рейтинга
     for (int i = 0; i < 5; i++) {
         QLabel *ratingStar = new QLabel();
-        ratingStar->setPixmap(QPixmap(":/icons/star_empty").scaled(20, 20, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+
+        if (keeper->getRatingUser() > i) {
+            ratingStar->setPixmap(QPixmap(":/icons/star_full").scaled(20, 20, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+        }else {
+            ratingStar->setPixmap(QPixmap(":/icons/star_empty").scaled(20, 20, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+        }
         ratingStar->setFixedSize(20, 20);
 
         starsGridLayout->addWidget(ratingStar, 0, i, Qt::AlignCenter);

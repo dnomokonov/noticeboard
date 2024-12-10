@@ -10,6 +10,9 @@
 #include <QPainterPath>
 #include <QStackedWidget>
 #include <QStyle>
+#include <string>
+
+#include "keeperdata.h"
 
 class profile : public QWidget
 {
@@ -17,6 +20,9 @@ class profile : public QWidget
 
 public:
     explicit profile(QWidget *parent = NULL);
+
+private:
+    KeeperData *keeper = new KeeperData();
 };
 
 #endif // PROFILE_H
