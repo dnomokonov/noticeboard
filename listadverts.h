@@ -3,15 +3,27 @@
 
 #include <QWidget>
 #include <QFile>
-#include <QVBoxLayout>
 #include <QLabel>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QPushButton>
+#include <QMessageBox>
+#include <QPixmap>
+#include <QBuffer>
+#include <QScrollArea>
+
+#include "mainwindow.h"
 
 class listAdverts : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit listAdverts(QWidget *parent = NULL);
+    explicit listAdverts(MainWindow *mainWindow, QWidget *parent = NULL);
+
+private:
+    MainWindow *mainWindow;
+    KeeperData* keeper = mainWindow->getKeeperData();
 };
 
 #endif // LISTADVERTS_H

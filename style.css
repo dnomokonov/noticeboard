@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
 QMainWindow, QDialog {
     background-color: #FFFFFF;
 }
@@ -248,3 +250,28 @@ QLabel {
     color: white;
 }
 
+#CardWidget {
+    border-radius: 10px;
+}
+
+#titleCard {
+    font-family: "Montserrat", sans-serif;
+    font-size: 18px;
+    color: #6771E0;
+    padding-left: 10px;
+}
+
+#costCard {
+    font-size: 18px;
+    padding-left: 10px;
+}
+
+#locationCard {
+    font-size: 14px;
+    color: #666666;
+    padding-left: 10px;
+}
+
+#cardButton {
+    color: #1A1A1A;
+}
