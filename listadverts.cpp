@@ -36,12 +36,20 @@ listAdverts::listAdverts(MainWindow *mainWindow, QWidget *parent)
 
     while (query.next()) {
         int advertId = query.value("id").toInt();
+        bool isFavorited = false;
         QString title = query.value("title").toString();
         double cost = query.value("cost").toDouble();
         QString location = query.value("location").toString().split(",").first();
         QByteArray photoData = query.value("photo").toByteArray();
 
-        qDebug() << "Тестовый запрос:\n" << advertId << " " << title << " " << cost << " " << location;
+        QSqlQuery checkFavoriteQuery;
+        checkFavoriteQuery.prepare("SELECT COUNT(*) FROM Favorites WHERE id_user = :id_user AND id_announcement = :id_announcement");
+        checkFavoriteQuery.bindValue(":id_user", currentUserId);
+        checkFavoriteQuery.bindValue(":id_announcement", advertId);
+
+        if (checkFavoriteQuery.exec() && checkFavoriteQuery.next()) {
+            isFavorited = (checkFavoriteQuery.value(0).toInt() > 0);
+        }
 
         QWidget *advertCard = new QWidget(scrollContent);
         advertCard->setFixedSize(240, 320);
@@ -80,9 +88,18 @@ listAdverts::listAdverts(MainWindow *mainWindow, QWidget *parent)
 
         QPushButton *favoriteButton = new QPushButton(advertCard);
         favoriteButton->setObjectName("onlyIconButton");
-        QPixmap iconFav(":/icons/likes");
+
+        QPixmap iconFavFull(":/icons/fav_full");
+        QIcon favFullIcon(iconFavFull);
+        QPixmap iconFav(":/icons/fav_empty");
         QIcon favButtonIcon(iconFav);
-        favoriteButton->setIcon(favButtonIcon);
+
+        if (isFavorited) {
+            favoriteButton->setIcon(favFullIcon);
+        } else {
+            favoriteButton->setIcon(favButtonIcon);
+        }
+
         favoriteButton->setIconSize(QSize(24, 22));
         favoriteButton->setFixedSize(30, 30);
         favoriteButton->setStyleSheet("background: none; border: none;");
@@ -117,6 +134,49 @@ listAdverts::listAdverts(MainWindow *mainWindow, QWidget *parent)
             col = 0;
             row++;
         }
+
+        advertCard->setProperty("isFavorited", isFavorited);
+
+        connect(favoriteButton, &QPushButton::clicked, this, [=,  &isFavorited]() mutable  {
+            if (currentUserId == 0) {
+                QMessageBox::warning(this, "Внимание", "Чтобы добавить в избранное, войдите в аккаунт.");
+                return;
+            }
+
+            bool isFavorited = advertCard->property("isFavorited").toBool();
+
+            QSqlQuery favoriteQuery;
+            if (isFavorited) {
+                favoriteQuery.prepare("DELETE FROM Favorites WHERE id_user = :id_user AND id_announcement = :id_announcement");
+                favoriteQuery.bindValue(":id_user", currentUserId);
+                favoriteQuery.bindValue(":id_announcement", advertId);
+
+                if (!favoriteQuery.exec()) {
+                    qDebug() << "Ошибка удаления из избранного:" << favoriteQuery.lastError().text();
+                } else {
+                    favoriteButton->setIcon(favButtonIcon);
+                    advertCard->setProperty("isFavorited", false);
+                }
+            } else {
+                favoriteQuery.prepare("INSERT INTO Favorites (id_user, id_announcement) VALUES (:id_user, :id_announcement)");
+                favoriteQuery.bindValue(":id_user", currentUserId);
+                favoriteQuery.bindValue(":id_announcement", advertId);
+
+                if (!favoriteQuery.exec()) {
+                    qDebug() << "Ошибка добавления в избранное:" << favoriteQuery.lastError().text();
+                } else {
+                    favoriteButton->setIcon(favFullIcon);
+                    advertCard->setProperty("isFavorited", true);
+                }
+            }
+        });
+
+        connect(viewButton, &QPushButton::clicked, this, [=]() {
+
+
+            QStackedWidget* stackedWidget = mainWindow->getStackedWidget();
+            stackedWidget->setCurrentIndex(6);
+        });
     }
 
     scrollContent->setLayout(contentLayout);

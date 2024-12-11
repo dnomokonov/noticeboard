@@ -256,6 +256,7 @@ QLabel {
 
 #titleCard {
     font-family: "Montserrat", sans-serif;
+    font-weight: bold;
     font-size: 18px;
     color: #6771E0;
     padding-left: 10px;
