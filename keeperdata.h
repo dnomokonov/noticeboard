@@ -51,6 +51,10 @@ public:
     void loadFromSettings();
     void saveToSettings();
 
+// Announcements
+    int getSelectedAnnouncemen();
+    void setSelectedAnnouncemen(int newID);
+
 private:
 // Info about user
     int userID;
@@ -64,7 +68,8 @@ private:
 // Info about user select geo or categories
     QString locationCityNow;
     QStringList selectedCategories;
-
+// Announcements data
+    int selectedAnnouncementID;
 };
 
 #endif // KEEPERDATA_H

@@ -1,6 +1,7 @@
 #include "keeperdata.h"
 
 // Receipt data
+
 int KeeperData::getUserID() {
     return userID;
 }
@@ -42,6 +43,7 @@ QStringList KeeperData::getSelectedCategories() {
 }
 
 // Change data
+
 void KeeperData::setUserID(int newID) {
     userID = newID;
     saveToSettings();
@@ -116,4 +118,14 @@ void KeeperData::saveToSettings() {
     settings.setValue("isAuthPerson", isAuthPerson);
     settings.setValue("locationCityNow", locationCityNow);
     settings.setValue("selectedCategories", selectedCategories);
+}
+
+// Announcements
+
+int KeeperData::getSelectedAnnouncemen() {
+    return selectedAnnouncementID;
+}
+
+void KeeperData::setSelectedAnnouncemen(int newID) {
+    selectedAnnouncementID = newID;
 }
