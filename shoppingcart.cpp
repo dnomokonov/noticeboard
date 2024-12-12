@@ -1,5 +1,6 @@
 #include "shoppingcart.h"
 #include "viewingad.h"
+#include "editannouncement.h"
 
 shoppingcart::shoppingcart(MainWindow *mainWindow, QWidget *parent)
     : mainWindow(mainWindow), QWidget(parent) {
@@ -121,12 +122,15 @@ void shoppingcart::updateContent()
         cardLayout->addWidget(locationLabel);
 
         QHBoxLayout *buttonLayout = new QHBoxLayout();
-        buttonLayout->setSpacing(5);
+
+        QPushButton *ebitButton = new QPushButton("Редактировать", advertCard);
+        ebitButton->setObjectName("cardButton");
 
         QPushButton *viewButton = new QPushButton("Посмотреть", advertCard);
         viewButton->setObjectName("cardButton");
 
         buttonLayout->addStretch();
+        buttonLayout->addWidget(ebitButton);
         buttonLayout->addWidget(viewButton);
 
         cardLayout->addLayout(buttonLayout);
@@ -139,6 +143,16 @@ void shoppingcart::updateContent()
             col = 0;
             row++;
         }
+
+        connect(ebitButton, &QPushButton::clicked, this, [=]() {
+            QStackedWidget* stackedWidget = mainWindow->getStackedWidget();
+
+            EditAnnouncement* editPage = qobject_cast<EditAnnouncement*>(stackedWidget->widget(6));
+
+            editPage->setIDAnnouncement(advertId);
+
+            stackedWidget->setCurrentIndex(6);
+        });
 
         connect(viewButton, &QPushButton::clicked, this, [=]() {
             QStackedWidget* stackedWidget = mainWindow->getStackedWidget();

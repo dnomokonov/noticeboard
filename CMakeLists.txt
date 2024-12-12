@@ -31,10 +31,11 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         profile.h profile.cpp
         shoppingcart.h shoppingcart.cpp
         favourites.h favourites.cpp
-        adsfound.h adsfound.cpp
+
         viewingad.h viewingad.cpp
         listadverts.h listadverts.cpp
         keeperdata.h keeperdata.cpp
+        editannouncement.h editannouncement.cpp
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET noticeboard APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR

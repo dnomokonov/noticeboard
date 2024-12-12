@@ -5,11 +5,10 @@
 #include "favourites.h"
 #include "shoppingcart.h"
 #include "profile.h"
-//#include "adsfound.h"
 #include "listadverts.h"
 #include "viewingad.h"
-
 #include "authwindow.h"
+#include "editannouncement.h"
 
 #include <QDebug>
 
@@ -186,6 +185,7 @@ MainWindow::MainWindow(QWidget *parent)
     shoppingcart *shoppingcartComponent = new shoppingcart(this, this);
     profile *profileComponent = new profile();
     viewingad *viewAnnouncement = new viewingad(this, this);
+    EditAnnouncement *editPage = new EditAnnouncement(this, this);
 
     stackedWidget->addWidget(allAdvertsList); // 0
     stackedWidget->addWidget(createAdComponent); // 1
@@ -193,7 +193,7 @@ MainWindow::MainWindow(QWidget *parent)
     stackedWidget->addWidget(favouritesComponent); // 3
     stackedWidget->addWidget(shoppingcartComponent); // 4
     stackedWidget->addWidget(viewAnnouncement); // 5
-
+    stackedWidget->addWidget(editPage); // 6
 
     bodyLayout->addWidget(stackedWidget);
     body->setLayout(bodyLayout);
@@ -235,18 +235,19 @@ MainWindow::MainWindow(QWidget *parent)
     QDialog *citySelectDialog = new QDialog(this);
     citySelectDialog->setObjectName("citySelectDialog");
     citySelectDialog->setWindowTitle("Геолокация");
-    citySelectDialog->setFixedSize(200, 140);
+    citySelectDialog->setFixedSize(220, 150);
 
     QGridLayout *cityDialogLayout = new QGridLayout(citySelectDialog);
 
-    QLabel *citySelectLabel = new QLabel("Выберите свой город", citySelectDialog);
+    QLabel *citySelectLabel = new QLabel("Выберите город", citySelectDialog);
     citySelectLabel->setObjectName("citySelectLabel");
     QComboBox *citySelectCombo = new QComboBox(citySelectDialog);
     citySelectCombo->setObjectName("categoryCustom");
-    citySelectCombo->setFixedWidth(150);
+    citySelectCombo->setFixedWidth(180);
     citySelectCombo->setMaxVisibleItems(5);
     citySelectCombo->addItems(
         {
+            "Все города",
             "Москва",
             "Новосибирск",
             "Омск",
@@ -259,16 +260,21 @@ MainWindow::MainWindow(QWidget *parent)
             "Благовещенск",
             "Хабаровск"
         }
-    );
+        );
 
-    QPushButton *btnCityDialog = new QPushButton("Сохранить", citySelectDialog);
+    QPushButton *btnCityDialog = new QPushButton("Применить", citySelectDialog);
+    QPushButton *btnCityClearDialog = new QPushButton("Отмена", citySelectDialog);
+
     btnCityDialog->setObjectName("defaultColorButton");
-    btnCityDialog->setFixedSize(110, 30);
+    btnCityDialog->setFixedSize(90, 35);
+    btnCityClearDialog->setObjectName("defaultButton");
+    btnCityClearDialog->setFixedSize(90, 35);
 
-    cityDialogLayout->addWidget(citySelectLabel, 0, 0, Qt::AlignCenter);
-    cityDialogLayout->addWidget(citySelectCombo, 1, 0, Qt::AlignCenter);
-    cityDialogLayout->setSpacing(12);
-    cityDialogLayout->addWidget(btnCityDialog, 2, 0, Qt::AlignCenter);
+    cityDialogLayout->addWidget(citySelectLabel, 0, 0, 1, 2, Qt::AlignCenter);
+    cityDialogLayout->addWidget(citySelectCombo, 1, 0, 1, 2, Qt::AlignCenter);
+    cityDialogLayout->setSpacing(10);
+    cityDialogLayout->addWidget(btnCityDialog, 2, 0, Qt::AlignRight);
+    cityDialogLayout->addWidget(btnCityClearDialog, 2, 1, Qt::AlignLeft);
 
     // <--- Grid Layout Add's --->
     gridLayout->addWidget(header, 0, 0, 1, 2);
@@ -278,6 +284,14 @@ MainWindow::MainWindow(QWidget *parent)
 
     // <--- Connects --->
     connect(logo, &QPushButton::clicked, this, [=]() {
+        QStringList categories;
+
+        listAdverts* allAdvertsList = qobject_cast<listAdverts*>(stackedWidget->widget(0));
+        if (allAdvertsList) {
+            allAdvertsList->setFilters("", categories, "");
+            allAdvertsList->updateFiltersAndReload();
+        }
+
         stackedWidget->setCurrentWidget(allAdvertsList);
     });
 
@@ -329,6 +343,15 @@ MainWindow::MainWindow(QWidget *parent)
         citySelectDialog->accept();
     });
 
+    connect(btnCityClearDialog, &QPushButton::clicked, citySelectDialog, [=]{
+        locationCityNow = "Все города";
+        citySelectCombo->setCurrentIndex(0);
+
+        keeper->setCurrentLocation(locationCityNow);
+
+        citySelectDialog->accept();
+    });
+
     connect(categoryButton, &QPushButton::clicked, this, [=]{
         categoriesDialog->exec();
     });
@@ -349,6 +372,31 @@ MainWindow::MainWindow(QWidget *parent)
     connect(clearCategSelect, &QPushButton::clicked, categoriesDialog, [=]{
         listCategories->clearSelection();
     });
+
+    connect(searchButton, &QPushButton::clicked, this, [=]() {
+        QString searchWords = searchInput->text();
+        QString location = citySelectCombo->currentText();
+
+        if (location == "Все города") {
+            location = "";
+        }
+
+        QStringList categories;
+        for (int i = 0; i < listCategories->count(); ++i) {
+            QListWidgetItem *item = listCategories->item(i);
+            if (item->checkState() == Qt::Checked) {
+                categories.append(item->text());
+            }
+        }
+
+        if (allAdvertsList) {
+            allAdvertsList->setFilters(searchWords, categories, location);
+            allAdvertsList->updateFiltersAndReload();
+        }
+
+        stackedWidget->setCurrentWidget(allAdvertsList);
+    });
+
 }
 
 MainWindow::~MainWindow()
@@ -356,8 +404,8 @@ MainWindow::~MainWindow()
     delete ui;
     delete keeper;
 
-    QSettings settings("bydn", "noticeboard");
-    settings.clear();
+    // QSettings settings("bydn", "noticeboard");
+    // settings.clear();
 }
 
 QStackedWidget* MainWindow::getStackedWidget() {

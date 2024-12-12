@@ -39,7 +39,7 @@ public:
 private:
     Ui::MainWindow *ui;
     QStackedWidget *stackedWidget = new QStackedWidget(this);
-    QString locationCityNow = "none";
+    QString locationCityNow = "Все города";
     KeeperData* keeper = new KeeperData();
     bool connectToDatabase();
     void openWindowAuth();
