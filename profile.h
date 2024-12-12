@@ -23,6 +23,8 @@ public:
 
 private:
     KeeperData *keeper = new KeeperData();
+
+    QPixmap createRoundedPixmap(const QPixmap &src, int radius);
 };
 
 #endif // PROFILE_H

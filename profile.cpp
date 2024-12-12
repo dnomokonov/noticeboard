@@ -1,21 +1,5 @@
 #include "profile.h"
 
-QPixmap createRoundedPixmap(const QPixmap &src, int radius) {
-    QPixmap roundedPixmap(src.size());
-    roundedPixmap.fill(Qt::transparent);
-
-    QPainter painter(&roundedPixmap);
-    painter.setRenderHint(QPainter::Antialiasing);
-    painter.setRenderHint(QPainter::SmoothPixmapTransform);
-
-    QPainterPath path;
-    path.addEllipse(0, 0, src.width(), src.height());
-    painter.setClipPath(path);
-
-    painter.drawPixmap(0, 0, src);
-    return roundedPixmap;
-}
-
 profile::profile(QWidget *parent) : QWidget(parent) {
 
     keeper->loadFromSettings();
@@ -54,7 +38,7 @@ profile::profile(QWidget *parent) : QWidget(parent) {
     QLabel *avatarLabel = new QLabel(personBlock);
     avatarLabel->setObjectName("profileAvatar");
 
-    QPixmap originalPixmap(":/avatar/ava");
+    QPixmap originalPixmap(":/avatar/user");
     avatarLabel->setPixmap(createRoundedPixmap(originalPixmap, 90).scaled(160, 160, Qt::KeepAspectRatio, Qt::SmoothTransformation));
 
     QString FullName = keeper->getNamePerson() + " " + keeper->getSurnamePerson();
@@ -147,4 +131,20 @@ profile::profile(QWidget *parent) : QWidget(parent) {
         advertsListWidget->setCurrentWidget(archiveAdvertsWidget);
     });
 
+}
+
+QPixmap profile::createRoundedPixmap(const QPixmap &src, int radius) {
+    QPixmap roundedPixmap(src.size());
+    roundedPixmap.fill(Qt::transparent);
+
+    QPainter painter(&roundedPixmap);
+    painter.setRenderHint(QPainter::Antialiasing);
+    painter.setRenderHint(QPainter::SmoothPixmapTransform);
+
+    QPainterPath path;
+    path.addEllipse(0, 0, src.width(), src.height());
+    painter.setClipPath(path);
+
+    painter.drawPixmap(0, 0, src);
+    return roundedPixmap;
 }
