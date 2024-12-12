@@ -13,6 +13,7 @@
     </qresource>
     <qresource prefix="/avatar">
         <file alias="ava">src/avatar/avatar.jpg</file>
+        <file alias="user">src/avatar/user.jpg</file>
     </qresource>
     <qresource prefix="/biz">
         <file alias="logo">src/logo/logo.png</file>
