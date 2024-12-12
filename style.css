@@ -276,3 +276,44 @@ QLabel {
 #cardButton {
     color: #1A1A1A;
 }
+
+#AnnouncementBlock {
+    min-height: 480px;
+    min-width: 850px;
+    border-radius: 10px;
+    color: black;
+    background-color: #EAEAEA;
+}
+
+#AnnouncementTitle {
+    font-size: 28px;
+    color: #6771E0;
+}
+
+#AnnouncementCost {
+    font-size: 24px;
+    color: #000000;
+}
+
+#AnnouncementDesc {
+    padding-left: 10px;
+    font-size: 16px;
+    color: #000000;
+}
+
+#AnnouncementPhone {
+    font-size: 18px;
+    color: #000000;
+}
+
+#AnnouncementCategory {
+}
+
+#sellerAvatar {
+    background-color: #D9D9D9;
+    border-radius: 30px;
+}
+
+QLabel {
+    font-size: 14px;
+}

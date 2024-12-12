@@ -7,7 +7,7 @@
 #include "profile.h"
 //#include "adsfound.h"
 #include "listadverts.h"
-//#include "viewingad.h" // временное решение
+#include "viewingad.h"
 
 #include "authwindow.h"
 
@@ -46,12 +46,6 @@ MainWindow::MainWindow(QWidget *parent)
             keeper->setRatingUser(ratingUser);
             keeper->setSalesUser(salesCount);
 
-            qDebug() << "Данные пользователя загружены:"
-                     << "ID:" << id_user
-                     << "Name:" << name
-                     << "Surname:" << surname
-                     << "Rating:" << ratingUser
-                     << "Sales:" << salesCount;
         } else {
             qDebug() << "Не удалось загрузить данные пользователя:" << query.lastError().text();
         }
@@ -188,15 +182,18 @@ MainWindow::MainWindow(QWidget *parent)
 
     listAdverts *allAdvertsList = new listAdverts(this, this);
     createadvertising *createAdComponent = new createadvertising(this, this);
-    favourites *favouritesComponent = new favourites();
-    shoppingcart *shoppingcartComponent = new shoppingcart();
+    favourites *favouritesComponent = new favourites(this, this);
+    shoppingcart *shoppingcartComponent = new shoppingcart(this, this);
     profile *profileComponent = new profile();
+    viewingad *viewAnnouncement = new viewingad(this, this);
 
-    stackedWidget->addWidget(allAdvertsList);
-    stackedWidget->addWidget(createAdComponent);
-    stackedWidget->addWidget(profileComponent);
-    stackedWidget->addWidget(favouritesComponent);
-    stackedWidget->addWidget(shoppingcartComponent);
+    stackedWidget->addWidget(allAdvertsList); // 0
+    stackedWidget->addWidget(createAdComponent); // 1
+    stackedWidget->addWidget(profileComponent); // 2
+    stackedWidget->addWidget(favouritesComponent); // 3
+    stackedWidget->addWidget(shoppingcartComponent); // 4
+    stackedWidget->addWidget(viewAnnouncement); // 5
+
 
     bodyLayout->addWidget(stackedWidget);
     body->setLayout(bodyLayout);
@@ -343,8 +340,6 @@ MainWindow::MainWindow(QWidget *parent)
         for (QListWidgetItem *item : selectedItems) {
             selectedCategories << item->text();
         }
-
-        qDebug() << selectedCategories;
 
         keeper->setSelectedCategories(selectedCategories);
 
