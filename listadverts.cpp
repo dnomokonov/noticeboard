@@ -1,4 +1,5 @@
 #include "listadverts.h"
+#include "viewingad.h"
 
 listAdverts::listAdverts(MainWindow *mainWindow, QWidget *parent)
     : QWidget(parent), mainWindow(mainWindow) {
@@ -172,10 +173,15 @@ listAdverts::listAdverts(MainWindow *mainWindow, QWidget *parent)
         });
 
         connect(viewButton, &QPushButton::clicked, this, [=]() {
-
-
             QStackedWidget* stackedWidget = mainWindow->getStackedWidget();
-            stackedWidget->setCurrentIndex(6);
+
+            keeper->setSelectedAnnouncemen(advertId);
+
+            viewingad* viewWidget = qobject_cast<viewingad*>(stackedWidget->widget(5));
+            if (viewWidget) {
+                viewWidget->loadAdData(advertId); // Передача данных
+            }
+            stackedWidget->setCurrentIndex(5);
         });
     }
 
