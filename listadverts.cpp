@@ -1,10 +1,8 @@
-#include "listadverts.h"
+#include "listAdverts.h"
 #include "viewingad.h"
 
 listAdverts::listAdverts(MainWindow *mainWindow, QWidget *parent)
     : QWidget(parent), mainWindow(mainWindow) {
-
-    keeper->loadFromSettings();
 
     QFile styleFile(":/styles/style.css");
     if (styleFile.open(QFile::ReadOnly)) {
@@ -13,18 +11,52 @@ listAdverts::listAdverts(MainWindow *mainWindow, QWidget *parent)
     }
 
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
-    QLabel *label = new QLabel("Объявления", this);
 
-    QScrollArea *scrollArea = new QScrollArea(this);
+    QLabel *titleLabel = new QLabel("Список объявлений", this);
+    titleLabel->setAlignment(Qt::AlignLeft);
+    mainLayout->addWidget(titleLabel);
+
+    scrollArea = new QScrollArea(this);
     scrollArea->setStyleSheet("background: white;");
-    QWidget *scrollContent = new QWidget(scrollArea);
-    QGridLayout *contentLayout = new QGridLayout(scrollContent);
+    scrollContent = new QWidget(scrollArea);
+    contentLayout = new QGridLayout(scrollContent);
+
+    scrollContent->setLayout(contentLayout);
+    scrollArea->setWidget(scrollContent);
+    scrollArea->setWidgetResizable(true);
+
+    mainLayout->addWidget(scrollArea);
+    setLayout(mainLayout);
+
+    updateFiltersAndReload();
+}
+
+void listAdverts::updateContent(const QString &searchWords, const QStringList &categories, const QString &location) {
+    clearLayout(contentLayout);
 
     int currentUserId = keeper->getUserID();
 
     QSqlQuery query;
-    query.prepare("SELECT id, title, cost, location, photo FROM Announcements WHERE id_user != :id_user");
+    QString queryString = "SELECT id, title, cost, location, photo FROM Announcements WHERE id_user != :id_user";
+
+    if (!searchWords.isEmpty()) {
+        queryString += " AND title LIKE :searchWords";
+    }
+    if (!categories.isEmpty()) {
+        queryString += " AND category IN (" + QStringList(categories).join(",") + ")";
+    }
+    if (!location.isEmpty()) {
+        queryString += " AND location LIKE :location";
+    }
+
+    query.prepare(queryString);
     query.bindValue(":id_user", currentUserId);
+    if (!searchWords.isEmpty()) {
+        query.bindValue(":searchWords", "%" + searchWords + "%");
+    }
+    if (!location.isEmpty()) {
+        query.bindValue(":location", "%" + location + "%");
+    }
 
     if (!query.exec()) {
         qDebug() << "Ошибка выполнения запроса:" << query.lastError().text();
@@ -179,7 +211,7 @@ listAdverts::listAdverts(MainWindow *mainWindow, QWidget *parent)
 
             viewingad* viewWidget = qobject_cast<viewingad*>(stackedWidget->widget(5));
             if (viewWidget) {
-                viewWidget->loadAdData(advertId); // Передача данных
+                viewWidget->loadAdData(advertId);
             }
             stackedWidget->setCurrentIndex(5);
         });
@@ -188,8 +220,33 @@ listAdverts::listAdverts(MainWindow *mainWindow, QWidget *parent)
     scrollContent->setLayout(contentLayout);
     scrollArea->setWidget(scrollContent);
     scrollArea->setWidgetResizable(true);
+}
 
-    mainLayout->addWidget(label);
-    mainLayout->addWidget(scrollArea);
-    setLayout(mainLayout);
+void listAdverts::showEvent(QShowEvent *event) {
+    QWidget::showEvent(event);
+    // QString emptyString;
+    // QStringList emptyCategories;
+    // updateContent(emptyString, emptyCategories, emptyString);
+}
+
+void listAdverts::setFilters(const QString &searchWords, const QStringList &categories, const QString &location) {
+    this->searchWords = searchWords;
+    this->categories = categories;
+    this->location = location;
+}
+
+void listAdverts::updateFiltersAndReload() {
+    updateContent(searchWords, categories, location);
+}
+
+void listAdverts::clearLayout(QLayout *layout) {
+    if (!layout) return;
+    while (QLayoutItem *item = layout->takeAt(0)) {
+        if (QWidget *widget = item->widget()) {
+            delete widget;
+        } else if (QLayout *childLayout = item->layout()) {
+            clearLayout(childLayout);
+        }
+        delete item;
+    }
 }
