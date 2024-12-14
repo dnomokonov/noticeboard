@@ -229,13 +229,16 @@ void EditAnnouncement::loadAnnouncementData() {
 void EditAnnouncement::saveAnnouncementData() {
     if (this->currentID <= 0) return;
 
+    int isActive = 1;
+
     QSqlQuery query;
-    query.prepare("UPDATE Announcements SET title = :title, description = :description, category = :category, cost = :cost, phone = :phone, location = :location, photo = :photo WHERE id = :id");
+    query.prepare("UPDATE Announcements SET title = :title, description = :description, category = :category, cost = :cost, phone = :phone, active = :active, location = :location, photo = :photo WHERE id = :id");
     query.bindValue(":title", titleEdit->text());
     query.bindValue(":description", descriptionEdit->toPlainText());
     query.bindValue(":category", categoryCombo->currentText());
     query.bindValue(":cost", priceEdit->text().toDouble());
     query.bindValue(":phone", phoneEdit->text());
+    query.bindValue(":active", isActive);
 
     QString location = QString("%1, %2, %3")
                            .arg(cityEdit->text().trimmed())
@@ -272,7 +275,20 @@ void EditAnnouncement::archiveAnnouncementData() {
         qDebug() << "Ошибка переноса объявления:" << query.lastError().text();
     }
 
-    QMessageBox::information(nullptr, "Статус операции", "Объявление перенесено в архив!");
+    // Запрос для увеличения количества продаж пользователя в таблице Users
+    query.prepare(R"(
+        UPDATE Users
+        SET sales = sales + 1
+        WHERE id = (SELECT id_user FROM Announcements WHERE id = :id)
+    )");
+    query.bindValue(":id", this->currentID);
+
+    if (!query.exec()) {
+        qDebug() << "Ошибка обновления количества продаж:" << query.lastError().text();
+    } else {
+        keeper->setSalesUser(keeper->getSalesUser() + 1);
+        QMessageBox::information(nullptr, "Статус операции", "Объявление перенесено в архив!");
+    }
 }
 
 void EditAnnouncement::deleteAnnouncementData() {

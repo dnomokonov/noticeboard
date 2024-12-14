@@ -29,6 +29,8 @@ protected:
 
 private:
     MainWindow *mainWindow;
+    KeeperData *keeper = mainWindow->getKeeperData();
+
     int currentID;
     void loadAnnouncementData();
     void updateContent();
