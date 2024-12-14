@@ -183,7 +183,7 @@ MainWindow::MainWindow(QWidget *parent)
     createadvertising *createAdComponent = new createadvertising(this, this);
     favourites *favouritesComponent = new favourites(this, this);
     shoppingcart *shoppingcartComponent = new shoppingcart(this, this);
-    profile *profileComponent = new profile();
+    profile *profileComponent = new profile(this, this);
     viewingad *viewAnnouncement = new viewingad(this, this);
     EditAnnouncement *editPage = new EditAnnouncement(this, this);
 
@@ -404,8 +404,8 @@ MainWindow::~MainWindow()
     delete ui;
     delete keeper;
 
-    // QSettings settings("bydn", "noticeboard");
-    // settings.clear();
+    QSettings settings("bydn", "noticeboard");
+    settings.clear();
 }
 
 QStackedWidget* MainWindow::getStackedWidget() {

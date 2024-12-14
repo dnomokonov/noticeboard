@@ -1,6 +1,7 @@
 #include "profile.h"
+#include "viewingad.h"
 
-profile::profile(QWidget *parent) : QWidget(parent) {
+profile::profile(MainWindow *mainWindow, QWidget *parent) : mainWindow(mainWindow), QWidget(parent) {
 
     keeper->loadFromSettings();
 
@@ -107,12 +108,28 @@ profile::profile(QWidget *parent) : QWidget(parent) {
     advertsListWidget->addWidget(activeAdvertsWidget);
     advertsListWidget->addWidget(archiveAdvertsWidget);
 
-    // Описание activeAdvertsWidget и archiveAdvertsWidget
-
     activeAdvertsWidget->setStyleSheet("background: #D6D6D6");
     archiveAdvertsWidget->setStyleSheet("background: #6771E0");
 
-    // ---
+    // QScrollArea* activeScrollArea = new QScrollArea(activeAdvertsWidget);
+    // activeScrollArea->setWidgetResizable(true); // Позволяет содержимому прокручивать область
+    // QWidget* activeContentWidget = new QWidget(); // Контейнер для содержимого
+    // QVBoxLayout* activeLayout = new QVBoxLayout(activeContentWidget); // Макет содержимого
+    // activeContentWidget->setLayout(activeLayout);
+
+    // // Настраиваем QScrollArea
+    // activeScrollArea->setWidget(activeContentWidget);
+    // activeScrollArea->setWidgetResizable(true); // Устанавливаем размер совпадающий с виджетом
+
+    // // Аналогично для archiveAdvertsWidget
+    // QScrollArea* archiveScrollArea = new QScrollArea(archiveAdvertsWidget);
+    // archiveScrollArea->setWidgetResizable(true);
+    // QWidget* archiveContentWidget = new QWidget();
+    // QVBoxLayout* archiveLayout = new QVBoxLayout(archiveContentWidget);
+    // archiveContentWidget->setLayout(archiveLayout);
+
+    // archiveScrollArea->setWidget(archiveContentWidget);
+    // archiveScrollArea->setWidgetResizable(true);
 
     advertsMainLayout->addLayout(buttonsLayout);
     advertsMainLayout->addWidget(advertsListWidget);
@@ -147,4 +164,92 @@ QPixmap profile::createRoundedPixmap(const QPixmap &src, int radius) {
 
     painter.drawPixmap(0, 0, src);
     return roundedPixmap;
+}
+
+void profile::showEvent(QShowEvent *event) {
+    QWidget::showEvent(event);
+
+}
+
+void profile::loadAnnouncements(QWidget* container, bool isActive) {
+    int currentUserId = keeper->getUserID();
+
+    QSqlQuery query;
+    query.prepare(R"(
+        SELECT Announcements.id, Announcements.title, Announcements.cost,
+               Announcements.location, Announcements.photo
+        FROM Announcements
+        WHERE Announcements.id_user = :id_user AND Announcements.active = :is_active
+    )");
+    query.bindValue(":id_user", currentUserId);
+    query.bindValue(":is_active", isActive);
+
+    if (!query.exec()) {
+        qDebug() << "Ошибка выполнения запроса:" << query.lastError().text();
+        return;
+    }
+
+    int columnCount = 4;
+    int row = 0;
+    int col = 0;
+
+    while (query.next()) {
+        int advertId = query.value("id").toInt();
+        QString title = query.value("title").toString();
+        double cost = query.value("cost").toDouble();
+        QString location = query.value("location").toString().split(",").first();
+        QByteArray photoData = query.value("photo").toByteArray();
+
+        QWidget* advertCard = new QWidget(container);
+        advertCard->setFixedSize(240, 320);
+        advertCard->setStyleSheet("background: #F3F3F3;");
+
+        QVBoxLayout* cardLayout = new QVBoxLayout(advertCard);
+        cardLayout->setSpacing(5);
+        cardLayout->setContentsMargins(5, 10, 5, 5);
+
+        QLabel* photoLabel = new QLabel(advertCard);
+        photoLabel->setAlignment(Qt::AlignCenter);
+        QPixmap pixmap;
+        if (pixmap.loadFromData(photoData)) {
+            photoLabel->setPixmap(pixmap.scaled(200, 200, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+        } else {
+            photoLabel->setText("Нет изображения");
+        }
+        cardLayout->addWidget(photoLabel);
+
+        QLabel* titleLabel = new QLabel(title, advertCard);
+        titleLabel->setObjectName("titleCard");
+        cardLayout->addWidget(titleLabel);
+
+        QLabel* costLabel = new QLabel(QString("%1 руб.").arg(cost), advertCard);
+        costLabel->setObjectName("costCard");
+        cardLayout->addWidget(costLabel);
+
+        QLabel* locationLabel = new QLabel(location, advertCard);
+        locationLabel->setObjectName("locationCard");
+        cardLayout->addWidget(locationLabel);
+
+        QPushButton* viewButton = new QPushButton("Посмотреть", advertCard);
+        viewButton->setObjectName("cardButton");
+        cardLayout->addWidget(viewButton);
+
+        connect(viewButton, &QPushButton::clicked, this, [=]() {
+            QStackedWidget* stackedWidget = mainWindow->getStackedWidget();
+
+            keeper->setSelectedAnnouncemen(advertId);
+
+            viewingad* viewWidget = qobject_cast<viewingad*>(stackedWidget->widget(5));
+            if (viewWidget) {
+                viewWidget->loadAdData(advertId);
+            }
+            stackedWidget->setCurrentIndex(5);
+        });
+
+        col++;
+        if (col >= columnCount) {
+            col = 0;
+            row++;
+        }
+    }
 }
