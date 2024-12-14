@@ -404,8 +404,8 @@ MainWindow::~MainWindow()
     delete ui;
     delete keeper;
 
-    QSettings settings("bydn", "noticeboard");
-    settings.clear();
+    // QSettings settings("bydn", "noticeboard");
+    // settings.clear();
 }
 
 QStackedWidget* MainWindow::getStackedWidget() {

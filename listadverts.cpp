@@ -1,4 +1,4 @@
-#include "listAdverts.h"
+#include "listadverts.h"
 #include "viewingad.h"
 
 listAdverts::listAdverts(MainWindow *mainWindow, QWidget *parent)
@@ -17,7 +17,7 @@ listAdverts::listAdverts(MainWindow *mainWindow, QWidget *parent)
     mainLayout->addWidget(titleLabel);
 
     scrollArea = new QScrollArea(this);
-    scrollArea->setStyleSheet("background: white;");
+    scrollArea->setStyleSheet("background: white; border:none;");
     scrollContent = new QWidget(scrollArea);
     contentLayout = new QGridLayout(scrollContent);
 

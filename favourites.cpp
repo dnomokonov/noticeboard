@@ -26,7 +26,7 @@ favourites::favourites(MainWindow *mainWindow, QWidget *parent)
     mainLayout->addWidget(label);
 
     scrollArea = new QScrollArea(this);
-    scrollArea->setStyleSheet("background: white;");
+    scrollArea->setStyleSheet("background: white; border:none;");
     scrollContent = new QWidget(scrollArea);
     contentLayout = new QGridLayout(scrollContent);
     contentLayout->setSpacing(10);
