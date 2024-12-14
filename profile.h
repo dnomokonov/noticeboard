@@ -27,13 +27,20 @@ protected:
 
 private:
     MainWindow *mainWindow;
-    KeeperData *keeper = new KeeperData();
+    KeeperData *keeper = mainWindow->getKeeperData();
     QPixmap createRoundedPixmap(const QPixmap &src, int radius);
-    void loadAnnouncements(QWidget* container, bool isActive);
 
-    QScrollArea *scrollArea;
+    int countSales = 0;
+
     QWidget *scrollContent;
     QGridLayout *contentLayout;
+
+    QWidget *scrollArchiveContent;
+    QGridLayout *contentArchiveLayout;
+
+    void updateSales();
+    void loadActiveAnnouncements();
+    void loadArchiveAnnouncements();
 };
 
 #endif // PROFILE_H

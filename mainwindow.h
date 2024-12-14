@@ -14,6 +14,9 @@
 #include <QListWidget>
 #include <QStringList>
 
+#include <QCoreApplication>
+#include <QProcess>
+
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QSqlError>
