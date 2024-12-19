@@ -6,11 +6,19 @@
         <file alias="profile">src/icons/profile.svg</file>
         <file alias="search">src/icons/search.svg</file>
         <file alias="shopbag">src/icons/shopbag.svg</file>
+        <file alias="star_empty">src/icons/star_empty.svg</file>
+        <file alias="star_full">src/icons/star_full.svg</file>
+        <file alias="fav_empty">src/icons/fav_empty.svg</file>
+        <file alias="fav_full">src/icons/fav_full.svg</file>
     </qresource>
     <qresource prefix="/avatar">
         <file alias="ava">src/avatar/avatar.jpg</file>
+        <file alias="user">src/avatar/user.jpg</file>
     </qresource>
     <qresource prefix="/biz">
         <file alias="logo">src/logo/logo.png</file>
+    </qresource>
+    <qresource prefix="/styles">
+        <file>style.css</file>
     </qresource>
 </RCC>

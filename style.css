@@ -1,0 +1,319 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+QMainWindow, QDialog {
+    background-color: #FFFFFF;
+}
+
+QLabel {
+    color: black;
+}
+
+#header{
+    background-color: #F5F5F5;
+}
+
+#blockFormAuth {
+    min-width: 350px;
+    min-height: 450px;
+    border-radius: 10px;
+    margin: 20px;
+    background-color: #F2F2F2;
+}
+
+#defaultField {
+    height: 30px;
+    margin: 0 50px 10px 50px;
+}
+
+#defaultButton {
+    border-radius: 10px;
+    color: #404040;
+    background-color: #D6D6D6;
+}
+
+#defaultButton:hover {
+    background-color: #cacaca;
+}
+
+#defaultButton:pressed {
+    background-color: #bbbbbb;
+}
+
+#defaultColorButton {
+    border-radius: 10px;
+    color: #FFFFFF;
+    background-color: #6771E0;
+}
+
+#defaultColorButton:hover {
+    background-color: #636dd6;
+}
+
+#defaultColorButton:pressed {
+    background-color: #5c65c4;
+}
+
+#defaultField {
+    padding: 8px;
+    border-radius: 15px;
+    color: black;
+    background-color: #D9D9D9;
+}
+
+#headerName {
+    color: black;
+    font-size: 25px;
+    padding-bottom: 20px;
+}
+
+#authBtn {
+    height: 25px;
+}
+
+#searchInput {
+    width: 300px;
+    min-width: 200px;
+    height: 26px;
+    border: 2px solid #6771E0;
+    border-radius: 15px;
+    padding-left: 10px;
+    color: black;
+    background-color: #FFFFFF;
+}
+
+#customBtn {
+    background-color: #6771E0;
+    color: white;
+    border-radius: 15px;
+}
+
+#customBtn:hover {
+    background-color: #636dd6;
+}
+
+#customBtn:pressed {
+    background-color: #5c65c4;
+}
+
+#customIconBtn {
+    background-color: #6771E0;
+    color: white;
+    border-radius: 8px;
+}
+
+#customIconBtn:hover {
+    background-color: #636dd6;
+}
+
+#customIconBtn:pressed {
+    background-color: #5c65c4;
+}
+
+#onlyIconButton {
+    border: none;
+    background: none;
+}
+
+#testing {
+    background-color: black;
+}
+
+/* Create Ad page */
+
+#blockCreateAd {
+    min-height: 480px;
+    min-width: 1020px;
+    border-radius: 10px;
+    color: black;
+    background-color: #EAEAEA;
+}
+
+#customFieldCreateAd {
+    padding: 8px;
+    border-radius: 15px;
+    color: black;
+    background-color: #D9D9D9;
+}
+
+#titleLabelCreateBlock {
+    padding-left: 2px;
+    color: black;
+}
+
+#uploadButton {
+    border-radius: 10px;
+    color: #404040;
+    background-color: #D6D6D6;
+}
+
+#uploadButton:hover {
+    background-color: #cacaca;
+}
+
+#uploadButton:pressed {
+    background-color: #bbbbbb;
+}
+
+#createAdButton {
+    background-color: #6771E0;
+    color: white;
+    border-radius: 8px;
+}
+
+#createAdButton:hover {
+    background-color: #636dd6;
+}
+
+#createAdButton:pressed {
+    background-color: #5c65c4;
+}
+
+#cancelButton {
+    border-radius: 10px;
+    color: white;
+    background-color: #DC2020;
+}
+
+#cancelButton:hover {
+    background-color: #d51e1e;
+}
+
+#cancelButton:pressed {
+    background-color: #ca1e1e;
+}
+
+#clearButton {
+    border-radius: 10px;
+    color: #404040;
+    background-color: #D6D6D6;
+}
+
+#clearButton:hover {
+    background-color: #cacaca;
+}
+
+#clearButton:pressed {
+    background-color: #bbbbbb;
+}
+
+#categoryCustom {
+    padding: 8px;
+    color: black;
+    background-color: #D6D6D6;
+}
+
+#categoryCustom QAbstractItemView {
+    outline: none;
+    padding: 8px;
+    color: black;
+    border-radius: 2px;
+    background-color: #d1d1d1;
+}
+
+#categoryCustom QAbstractItemView::item {
+    padding: 5px;
+}
+
+
+#categoryCustom QAbstractItemView::item:selected {
+    background-color: #6771E0;
+    color: #ffffff;
+}
+
+#uploadImageBlock {
+    border-radius: 15px;
+    background-color: #D9D9D9;
+}
+
+/* Profile page */
+
+#profileAvatar {
+    padding: 4px;
+    border-radius: 86px;
+    border: 4px solid #6771E0;
+}
+
+/* Dialog */
+
+#customQListWidget {
+    color: black;
+    background-color: #FFFFFF;
+}
+
+#customQListWidget::item:hover {
+    background-color: #EFEFEF;
+    border: 1px solid #6771E0;
+}
+
+#customQListWidget::item:selected {
+    background-color: #6771E0;
+    color: white;
+}
+
+#CardWidget {
+    border-radius: 10px;
+}
+
+#titleCard {
+    font-family: "Montserrat", sans-serif;
+    font-weight: bold;
+    font-size: 18px;
+    color: #6771E0;
+    padding-left: 10px;
+}
+
+#costCard {
+    font-size: 18px;
+    padding-left: 10px;
+}
+
+#locationCard {
+    font-size: 14px;
+    color: #666666;
+    padding-left: 10px;
+}
+
+#cardButton {
+    color: #1A1A1A;
+}
+
+#AnnouncementBlock {
+    min-height: 480px;
+    min-width: 850px;
+    border-radius: 10px;
+    color: black;
+    background-color: #EAEAEA;
+}
+
+#AnnouncementTitle {
+    font-size: 28px;
+    color: #6771E0;
+}
+
+#AnnouncementCost {
+    font-size: 24px;
+    color: #000000;
+}
+
+#AnnouncementDesc {
+    padding-left: 10px;
+    font-size: 16px;
+    color: #000000;
+}
+
+#AnnouncementPhone {
+    font-size: 18px;
+    color: #000000;
+}
+
+#AnnouncementCategory {
+}
+
+#sellerAvatar {
+    background-color: #D9D9D9;
+    border-radius: 30px;
+}
+
+QLabel {
+    font-size: 14px;
+}
